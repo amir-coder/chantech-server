@@ -1,0 +1,8 @@
+{
+  "name": "chantech-bknd2",
+  "version": "1.0.0",
+  "description": "the backend of db project",
+  "main": "main.js",
+  "author": "amir",
+  "license": "MIT"
+}
