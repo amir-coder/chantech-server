@@ -4,5 +4,9 @@
   "description": "the backend of db project",
   "main": "main.js",
   "author": "amir",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.2",
+    "mysql2": "^2.3.3"
+  }
 }
