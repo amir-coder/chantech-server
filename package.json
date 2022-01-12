@@ -6,7 +6,12 @@
   "author": "amir",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.2",
+    "mysql": "^2.18.1",
     "mysql2": "^2.3.3"
+  },
+  "scripts": { 
+    "start": "node main.js"
   }
 }
