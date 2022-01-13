@@ -36,7 +36,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
       });
     }else{
       //check if mdp is correct
-      if(data.mdp === req.params.mdp) {
+      if(data[0].mdp === req.params.mdp) {
         //mot de passe correct
           res.json({
             status: 200,
