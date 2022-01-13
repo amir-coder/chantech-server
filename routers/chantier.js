@@ -22,21 +22,14 @@ db.connection.query(query, function(err, data, fields) {
 })
 });
 
-//create new personne
-router.post("/", function(req, res) {
+//installe equipement in chantier
+router.post("/chantier/:nomChantier/equipement/:nomEquipement", function(req, res) {
 
-let values = [
-  req.body.nomchantier,
-  req.body.proprietaireEmail,
-  req.body.responsableEmail,
-  req.body.address
-];
-
-let query = `insert into chantier (nomchantier, proprietaire, responsable, address) values ( ${values[0]},
-    (select idPersonne from personne where email=${values[1]}), 
-    (select idPersonne from personne where email = ${values[2]}),
-    ${values[3]}
-    )`;
+let query = `
+insert into installer (chantier, Equipement) values (
+  (select idchantier from chantier where (nomChantier="${req.params.nomchantier}")), 
+  (select idEquipement from equipement where (libele = "${req.params.nomchantier}"))
+  )`;
 
 db.connection.query(query, function(err, data, fields) {
   if (err) throw err;

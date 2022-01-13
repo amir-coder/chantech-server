@@ -20,17 +20,45 @@ router.get('/', function(req, res){
   })
 });
 
-//create new personne
-router.post("/", function(req, res) {
-  let query = "INSERT INTO PERSONNE values (?)"
-  let values = [
-    req.body.nom,
-    req.body.prenom,
-    req.body.numero,
-    req.body.email
-  ];
+//authenticate personne
+router.get("/email/:email/mdp/:mdp", function(req, res) {
+  
+  //check if personne existe
+  query = `select * from personne where email= "${req.params.email}"`;
 
-  db.connection.query(query, [values], function(err, data, fields) {
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    if (data.length === 0) {
+      //send message that user does not existe
+      res.json({
+        status: 100,
+        message: "Personne n'existe pas!"
+      });
+    }else{
+      //check if mdp is correct
+      if(data.mdp === req.params.mdp) {
+        //mot de passe correct
+          res.json({
+            status: 200,
+            message: "Mot de passe correct!"
+          });
+      }else {
+        //mot de passe incorrect
+          res.json({
+            status: 100,
+            message: "mot de passe incorrect!"
+          });
+      }
+    }
+  });
+});
+
+
+//create new personne
+router.post("/nom/:nom/prenom/:prenom/numero/:numero/email/:email", function(req, res) {
+  let query = `INSERT INTO PERSONNE(nom, prenom, numero, email) values ("${req.params.nom}", "${req.params.prenom}", ${req.params.numero}, "${req.params.email}")`;
+
+  db.connection.query(query, function(err, data, fields) {
     if (err) throw err;
     res.json({
       status: 200,
@@ -38,6 +66,8 @@ router.post("/", function(req, res) {
     });
   })
 });
+
+
 
 
 module.exports = router;

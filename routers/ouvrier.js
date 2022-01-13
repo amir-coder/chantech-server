@@ -119,9 +119,10 @@ router.post('/email/:email/nomChantier/:nomChantier', (req, res)=> {
   });
 });
 
+
+
 //creer un nouveau ouvrier
 router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:nomSpecialite', (req, res)=> {
-  
   
   //check if ouvrier existe
   query = `select * from personne where email= ${req.params.email}`;
@@ -130,7 +131,7 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
     if (err) throw err;
     if (length(data) = 0) {
       //ouvrier doesn't existe in personne so create
-      let query = `INSERT INTO PERSONNE values ("${req.params.nom}", "${req.params.prenom}", ${req.params.numero}, "${req.params.email}")`;
+      let query = `INSERT INTO PERSONNE(nom, prenom, numero, email) values ("${req.params.nom}", "${req.params.prenom}", ${req.params.numero}, "${req.params.email}")`;
       
       db.connection.query(query, function(err, data, fields) {
         if (err) throw err;
@@ -147,7 +148,7 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
 
     if (length(data) = 0) {
       //create pecialite
-      let query = `INSERT INTO specialite values ("${req.params.nomSpecialite}")`;
+      let query = `INSERT INTO specialite(nomSpecialite) values ("${req.params.nomSpecialite}")`;
       
   
       db.connection.query(query, function(err, data, fields) {

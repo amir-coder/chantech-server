@@ -40,18 +40,17 @@ var routers = {
     personne: require('./routers/personne'),
     ouvrier: require('./routers/ouvrier'),
     tache: require('./routers/tache'),
+    equipement: require('./routers/equipement'),
 }
+
 //use routers
 app.use("/personne", routers.personne);
 app.use("/ouvrier", routers.ouvrier);
 app.use("/tache", routers.tache);
+app.use("/equipement", routers.equipement);
 
 app.listen(server.port, () => {
     console.log(`Server is running in port ${PORT}`);
 });
 
 
-//requests:
-
-//to do: add number of equuipement in installer
-//       add max of equipement to equipement

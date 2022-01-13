@@ -46,7 +46,7 @@ db.connection.query(query, [values], function(err, data, fields) {
   if (err) throw err;
   res.json({
     status: 200,
-    message: "New Object Personne Added successfully!"
+    message: "New Object Tache Added successfully!"
   });
 })
 });
