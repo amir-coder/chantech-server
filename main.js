@@ -41,6 +41,7 @@ var routers = {
     ouvrier: require('./routers/ouvrier'),
     tache: require('./routers/tache'),
     equipement: require('./routers/equipement'),
+    chantier: require('./routers/chantier'),
 }
 
 //use routers
@@ -48,6 +49,7 @@ app.use("/personne", routers.personne);
 app.use("/ouvrier", routers.ouvrier);
 app.use("/tache", routers.tache);
 app.use("/equipement", routers.equipement);
+app.use("/chantier", routers.chantier);
 
 app.listen(server.port, () => {
     console.log(`Server is running in port ${PORT}`);

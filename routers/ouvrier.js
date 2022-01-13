@@ -11,9 +11,9 @@ const db = require('../app/models');
 //getting the list of object Ouvrier
 
 router.get('/', function(req, res){
-let query = "SELECT nom, prenom, numero, email, nomSpecialite\
-FROM Personne p, ouvrier o, Specialite s \
-where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) )";
+let query = `SELECT nom, prenom, numero, email, nomSpecialite
+FROM Personne p, ouvrier o, Specialite s 
+where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) )`;
 db.connection.query(query, function(err, data, fields) {
   if(err) throw err;
   res.json({
@@ -26,9 +26,9 @@ db.connection.query(query, function(err, data, fields) {
 
 //getting the time of work by ouvrier
 
-router.get('/:email/travaille', function(req, res){
-  let query = 
-  `SELECT sum(duree) 
+router.get('/email/:email/travaille', function(req, res){
+
+  let query = `SELECT sum(duree) 
   from tache 
   where (termine = 1)
   and idTache IN (select idTache 
@@ -59,6 +59,20 @@ router.get('/libre', function(req, res){
   })
   });
 
+  //getting the list of object Ouvrier with condition (est occupe)
+router.get('/occupe', function(req, res){
+  let query = `SELECT nom, prenom, numero, email, nomSpecialite\
+  FROM Personne p, ouvrier o, Specialite s \
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (o.idouvrier in (select idOuvrier from tache where termine = 0)))`;
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "user list retrieved successfully"
+    })
+  })
+  });
 
 //getting the list of object Ouvrier with condition (est disponible dans un chantier)
 router.get('/nomChantier/:nomChantier/', function(req, res){
@@ -171,7 +185,6 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
         status: 200,
         message: "Ouvrier ajouter!"
       });
-      
     });
 });
 

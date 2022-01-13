@@ -53,18 +53,18 @@ db.connection.query(query, [values], function(err, data, fields) {
 
 
 //affecter une tache a un ouvrier dans un chantier
+
+// localhost:8080/tache/chantier/:Chantier albaraka/nomTache/deplacement de materiel/emailOuvrier/ccc@gmail.com
 router.post("/chantier/:nomChantier/nomTache/:nomTache/emailOuvrier/:emailOuvrier", function(req, res) {
 
   let query = 
-  `insert into travaille(tache, ouvrier) values (\
-    (select idTache \
-    from tache \
-    where nom= "${req.params.nomTache}"),\
-    (select ouvrier from Affecter a where (select idChantier from chantier where nomchantier= "${req.params.nomChantier}")\
+  `insert into travaille(tache, ouvrier) values (
+    (select idTache from tache where nom= "${req.params.nomTache}"),
+    (select ouvrier from Affecter a where ((select idChantier from chantier where nomchantier= "${req.params.nomChantier}")
     and exists (select * from personne p where ((a.idOuvrier = idpersonne) and (p.email = "${req.params.emailOuvrier}"))))`;
 
 
-  db.connection.query(query, [values], function(err, data, fields) {
+  db.connection.query(query, function(err, data, fields) {
     if (err) throw err;
     res.json({
       status: 200,

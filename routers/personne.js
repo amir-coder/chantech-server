@@ -53,7 +53,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
   });
 });
 
-
+//role
 router.get("/email/:email/role/", function(req, res){
   resdata =  {
     "admin": 0,
