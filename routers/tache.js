@@ -59,9 +59,11 @@ router.post("/chantier/:nomChantier/nomTache/:nomTache/emailOuvrier/:emailOuvrie
 
   let query = 
   `insert into travaille(tache, ouvrier) values (
-    (select idTache from tache where nom= "${req.params.nomTache}"),
-    (select ouvrier from Affecter a where ((select idChantier from chantier where nomchantier= "${req.params.nomChantier}")
-    and exists (select * from personne p where ((a.idOuvrier = idpersonne) and (p.email = "${req.params.emailOuvrier}"))))`;
+    (select idTache from tache where (nom= "${req.params.nomTache}")),
+    (select ouvrier from Affecter a where (
+    	(exists (select idChantier from chantier where (nomchantier= "${req.params.nomChantier}")))
+    	and (exists (select * from personne p where ( (a.ouvrier = p.idpersonne) and ( p.email = "${req.params.emailOuvrier}" ) ) ))
+        )))`;
 
 
   db.connection.query(query, function(err, data, fields) {

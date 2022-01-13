@@ -116,6 +116,7 @@ router.get('/nomChantier/:nomChantier/', function(req, res){
 
 
 //ajouter un ouvrier a un chantier
+// tested
 router.post('/email/:email/nomChantier/:nomChantier', (req, res)=> {
   query = `insert into affecter(ouvrier, chantier) values (
 
@@ -136,14 +137,16 @@ router.post('/email/:email/nomChantier/:nomChantier', (req, res)=> {
 
 
 //creer un nouveau ouvrier
+//tested and works
 router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:nomSpecialite', (req, res)=> {
   
   //check if ouvrier existe
-  query = `select * from personne where email= ${req.params.email}`;
+  query = `select * from personne where email= "${req.params.email}"`;
 
   db.connection.query(query, function(err, data, fields) {
     if (err) throw err;
-    if (length(data) = 0) {
+    if (data.length === 0) {
+      console.log("Creating user");
       //ouvrier doesn't existe in personne so create
       let query = `INSERT INTO PERSONNE(nom, prenom, numero, email) values ("${req.params.nom}", "${req.params.prenom}", ${req.params.numero}, "${req.params.email}")`;
       
@@ -151,8 +154,8 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
         if (err) throw err;
       });
     };
-    //personne now existes
-  });
+    
+  //personne now existes
 
   //checking if specialite existes
   query = `select * from specialite where nomSpecialite= "${req.params.nomSpecialite}"`;
@@ -160,7 +163,7 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
   db.connection.query(query, function(err, data, fields) {
     if (err) throw err;
 
-    if (length(data) = 0) {
+    if (data.length === 0) {
       //create pecialite
       let query = `INSERT INTO specialite(nomSpecialite) values ("${req.params.nomSpecialite}")`;
       
@@ -170,7 +173,6 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
       });
     };
     //Specialite now existe now existes
-  });
 
   //creating ouvrier
   query = `insert into ouvrier (idouvrier, idspecialite) values ( 
@@ -186,6 +188,9 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
         message: "Ouvrier ajouter!"
       });
     });
+  });
+
+  });
 });
 
 
