@@ -52,18 +52,11 @@ db.connection.query(query, [values], function(err, data, fields) {
 });
 
 
-//affecter une tache a un ouvrier dans un chantier
-
-// localhost:8080/tache/chantier/:Chantier albaraka/nomTache/deplacement de materiel/emailOuvrier/ccc@gmail.com
-router.post("/chantier/:nomChantier/nomTache/:nomTache/emailOuvrier/:emailOuvrier", function(req, res) {
+//rendre tache terminer
+router.put("/setTerminer/nomTache/:nomTache", function(req, res) {
 
   let query = 
-  `insert into travaille(tache, ouvrier) values (
-    (select idTache from tache where (nom= "${req.params.nomTache}")),
-    (select ouvrier from Affecter a where (
-    	(exists (select idChantier from chantier where (nomchantier= "${req.params.nomChantier}")))
-    	and (exists (select * from personne p where ( (a.ouvrier = p.idpersonne) and ( p.email = "${req.params.emailOuvrier}" ) ) ))
-        )))`;
+  `update teche set terminer = 1 where (nomTache = ${req.params.nomTache})`;
 
 
   db.connection.query(query, function(err, data, fields) {
@@ -74,7 +67,25 @@ router.post("/chantier/:nomChantier/nomTache/:nomTache/emailOuvrier/:emailOuvrie
     });
   })
   });
+  router.post("/chantier/:nomChantier/nomTache/:nomTache/emailOuvrier/:emailOuvrier", function(req, res) {
 
+    let query = 
+    `insert into travaille(tache, ouvrier) values (
+      (select idTache from tache where (nom= "${req.params.nomTache}")),
+      (select ouvrier from Affecter a where (
+        (exists (select idChantier from chantier where (nomchantier= "${req.params.nomChantier}")))
+        and (exists (select * from personne p where ( (a.ouvrier = p.idpersonne) and ( p.email = "${req.params.emailOuvrier}" ) ) ))
+          )))`;
+  
+  
+    db.connection.query(query, function(err, data, fields) {
+      if (err) throw err;
+      res.json({
+        status: 200,
+        message: "Tache affecter avec succee!"
+      });
+    })
+    });
 
 
 module.exports = router;

@@ -9,7 +9,7 @@ const db = require('../app/models');
 
 
 //getting the list of object Ouvrier
-
+//tested and works
 router.get('/', function(req, res){
 let query = `SELECT nom, prenom, numero, email, nomSpecialite
 FROM Personne p, ouvrier o, Specialite s 
@@ -61,9 +61,9 @@ router.get('/libre', function(req, res){
 
   //getting the list of object Ouvrier with condition (est occupe)
 router.get('/occupe', function(req, res){
-  let query = `SELECT nom, prenom, numero, email, nomSpecialite\
-  FROM Personne p, ouvrier o, Specialite s \
-  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (o.idouvrier in (select idOuvrier from tache where termine = 0)))`;
+  let query = `SELECT nom, prenom, numero, email, nomSpecialite
+  FROM Personne p, ouvrier o, Specialite s 
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( exists (select * from tache where ((idOuvrier = o.idouvrier) and (termine = 0)))))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
