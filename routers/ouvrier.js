@@ -83,7 +83,7 @@ router.get('/occupe', function(req, res){
 //tested
 router.get('/nomChantier/:nomChantier/', function(req, res){
 
-  let query = `SELECT distinct nom, prenom, numero, email, nomSpecialite
+  let query = `SELECT distinct idPersonne, nom, prenom, numero, email, nomSpecialite
   FROM Personne p, ouvrier o, Specialite s, affecter aff
   where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( o.idouvrier in (
   select ouvrier

@@ -62,6 +62,7 @@ router.get('/fermer', function(req, res){
   nomChantier,
   proprietaire,
   responsable,
+  fermer,
   address
   FROM chantier, personne p1, personne p2 where ((fermer = 1)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
   db.connection.query(query, function(err, data, fields) {
@@ -74,26 +75,6 @@ router.get('/fermer', function(req, res){
   })
   });
 
-  async function reformattingdata(data) {
-    datatosend = [];
-    let i = 0;
-    if (data.length ===0) {
-      for(i=0; i++; i< data.length) {
-        datatosend[i].chantier = data;
-        let query = `SELECT * FROM personne where idPersonne = ${datatosend[i].responsable} `;
-        db.connection.query(query, function(err, data1, fields) {
-          if(err) throw err;
-          datatosend[i].responsable = data1[0];
-          let query = `SELECT * FROM personne where idPersonne = ${datatosend[i].proprietaire} `;
-          db.connection.query(query, function(err, data2, fields) {
-            if(err) throw err;
-            datatosend[i].proprietaire = data2[0];
-          });
-        });
-      }
-    }
-    return datatosend;
-  }
 
   //getting the list of object Chantier courant
 router.get('/courant', function(req, res) {
@@ -116,6 +97,7 @@ router.get('/courant', function(req, res) {
   nomChantier,
   proprietaire,
   responsable,
+  fermer,
   address
   FROM chantier, personne p1, personne p2 where ((fermer = 0)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
   datatosend = []
@@ -171,6 +153,20 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
     res.json({
       status: 200,
       message: "New Object Chantier Added successfully!"
+    });
+  })
+  });
+
+
+  //tested and works
+  router.delete("/chantierId/:chantierID/ouvrierid/:ouvrierid",  function(req, res){
+    let query = `DELETE FROM affecter WHERE ((chantier = ${req.params.chantierID})and(ouvrier =  ${req.params.ouvrierid}));`;
+    
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "Ouvrier supprimer du chantier avec succee!"
     });
   })
   });
