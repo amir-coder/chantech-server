@@ -140,21 +140,56 @@ db.connection.query(query, function(err, data, fields) {
 //ajouter un chantier
 //tested and works
 router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsable/:emailrespo/address/:address", function(req, res) {
-
-  let query = `insert into chantier (nomchantier, proprietaire, responsable, address) values ( 
-    "${req.params.nomChantier}",
-    (select idPersonne from personne where email="${req.params.emailpro}"), 
-    (select idPersonne from personne where email = "${req.params.emailrespo}"),
-    "${req.params.address}"
-    );`;
+  
+  let query = `select * from personne where email = ${req.params.emailpro}`;
   
   db.connection.query(query, function(err, data, fields) {
+    if(data.length === 0) {
+      //proptietaire n'existe pas
+      res.json({
+        status: 100,
+        message: "Proprietaire n'existe pas."
+      });
+
+    }else{
+      //proprietaire existe
+      //verifier responsable
+      let query = `select * from personne where email = ${req.params.emailrespo}`;
+      db.connection.query(query, function(err, data, fields) {
+        if(data.length === 0) {
+          //responsable n'existe pas
+      res.json({
+        status: 100,
+        message: "Responsable n'existe pas."
+      });
+        }else{
+          //responsable existe
+
+          let query = `insert into chantier (nomchantier, proprietaire, responsable, address) values ( 
+            "${req.params.nomChantier}",
+            (select idPersonne from personne where email="${req.params.emailpro}"), 
+            (select idPersonne from personne where email = "${req.params.emailrespo}"),
+            "${req.params.address}"
+            );`;
+          
+          db.connection.query(query, function(err, data, fields) {
+            if (err) throw err;
+            res.json({
+              status: 200,
+              message: "New Object Chantier Added successfully!"
+            });
+          })
+
+        }
+      });
+    }
     if (err) throw err;
     res.json({
       status: 200,
       message: "New Object Chantier Added successfully!"
     });
   })
+
   });
 
 

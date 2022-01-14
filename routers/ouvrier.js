@@ -44,6 +44,31 @@ router.get('/email/:email/travaille', function(req, res){
   })
   });
 
+  //chercher ouvrier
+router.get("/email/:email", function(req, res) {
+  
+  //check if ouvrier existe
+  query = `select * from ouvrier where (idouvrier in (select idPersonne from personne where email= "${req.params.email}"))`;
+
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    if (data.length === 0) {
+      //send message that user does not existe
+      res.json({
+        status: 100,
+        message: "ouvrier n'existe pas!"
+      });
+    }else{
+      //send resonse
+      res.json({
+        status: 200,
+        data: data,
+        message: "ouvrier existe!"
+      });
+    }
+  });
+});
+
 
 //getting the list of object Ouvrier with condition (est libre)
 //tested 
