@@ -242,6 +242,20 @@ router.get('/info/email/:email', function(req, res){
   })
   });
 
+  router.get('/info/id/:id', function(req, res){
+    let query = `SELECT idPersonne,nom, prenom, numero, email, nomspecialite
+    FROM Personne p, ouvrier o, Specialite s
+    where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (p.idPersonne =  "${req.params.id}") )`;
+    db.connection.query(query, function(err, data, fields) {
+      if(err) throw err;
+      res.json({
+        status: 200,
+        data,
+        message: "user list retrieved successfully"
+      })
+    })
+    });
+
 router.delete("/id/:id", function(req, res){
 let query = `delete from ouvrier where idouvrier = ${req.params.id} `;
 
@@ -264,3 +278,7 @@ module.exports = router
 // add constraint fk_chantier_responsable foreign key(responsable) references ouvrier(idOuvrier) on delete cascade on update cascade
 // 
 // add constraint fk_travaille_chantier2 foreign key(ouvrier) references ouvrier(idouvrier) on delete cascade on update set null
+
+// alter table travaille
+// add constraint fk_tache foreign key(tache) references tache(idtache) on delete cascade on update cascade,
+// add constraint fk_ouvrier foreign key(ouvrier) references ouvrier(idouvrier) on delete cascade on update cascade

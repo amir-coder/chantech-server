@@ -217,4 +217,13 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
     });
 
 
+    //ALTER TABLE chantier DROP foreign key
+
+//chantier_ibfk_1
+
+// chantier_ibfk_2
+//fk_chantier_proprietaire1
+// fk_chantier_responsable
+// fk_chantier_responsable1
+
 module.exports = router;
