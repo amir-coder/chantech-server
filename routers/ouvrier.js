@@ -1,6 +1,7 @@
 
 
 const express = require("express");
+const Query = require("mysql/lib/protocol/sequences/Query");
 router = express.Router();
 
 
@@ -225,8 +226,41 @@ router.post('/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:no
   });
 });
 
+//getting the list of object Ouvrier with condition (est libre)
+//tested 
+router.get('/info/email/:email', function(req, res){
+  let query = `SELECT idPersonne,nom, prenom, numero, email, nomspecialite
+  FROM Personne p, ouvrier o, Specialite s
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (p.email = "${req.params.email}") )`;
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "user list retrieved successfully"
+    })
+  })
+  });
 
+router.delete("/id/:id", function(req, res){
+let query = `delete from ouvrier where idouvrier = ${req.params.id} `;
 
+db.connection.query(query, function(err, data, fields) {
+  if (err) throw err;
+  //responding
+  res.json({
+    status: 200,
+    message: "Ouvrier supprimer!"
+  });
+});
 
+});
 
 module.exports = router
+
+// alter table installer
+// add constraint fk_type foreign key(equipement) references equipement(idequipement) on delete cascade on update cascade
+// 
+// add constraint fk_chantier_responsable foreign key(responsable) references ouvrier(idOuvrier) on delete cascade on update cascade
+// 
+// add constraint fk_travaille_chantier2 foreign key(ouvrier) references ouvrier(idouvrier) on delete cascade on update set null
