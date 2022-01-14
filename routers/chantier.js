@@ -141,7 +141,7 @@ db.connection.query(query, function(err, data, fields) {
 //tested and works
 router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsable/:emailrespo/address/:address", function(req, res) {
   
-  let query = `select * from personne where email = ${req.params.emailpro}`;
+  let query = `select * from personne where email = "${req.params.emailpro}"`;
   
   db.connection.query(query, function(err, data, fields) {
     if(data.length === 0) {
