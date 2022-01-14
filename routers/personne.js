@@ -20,6 +20,20 @@ router.get('/', function(req, res){
   })
 });
 
+//getting the list of object Personne with id
+
+router.get('/id/:id', function(req, res){
+  let query = `SELECT * FROM PERSONNE where idPersonne= ${req.params.id}`;
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object Personne list retrieved successfully"
+    })
+  })
+});
+
 //authenticate personne
 router.get("/email/:email/mdp/:mdp", function(req, res) {
   
