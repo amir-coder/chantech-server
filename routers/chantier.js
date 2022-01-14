@@ -20,19 +20,16 @@ db.connection.query(query, function(err, data, fields) {
   })
 })
 });
-// SELECT libele, prix, numEquipement, nbArticle from equipement, installer i
-//   where ((idequipement in (
-//   select equipement from installer i where (i.chantier in (select idchantier from chantier where (nomchantier = "${req.params.nomEquipement}"))
-//   ))) and (i.equipement = idEquipement))
+
 
 
 
 //getting the list of object equipement in chantier
-router.get('/nomEquipement/:nomEquipement/equipement', function(req, res){
-  let query = `SELECT * from equipement
-  where (idequipement in (
-  select equipement from installer i where (i.chantier in (select idchantier from chantier where (nomchantier = "${req.params.nomEquipement}"))
-  )))`;
+router.get('/idChantier/:idChantier/equipement', function(req, res){
+  let query = `SELECT libele, prix, numEquipement, nombreArticle from equipement, installer i
+  where ((idequipement in (
+  select equipement from installer i where (i.chantier = ${req.params.idChantier}
+  ))) and (i.equipement = idEquipement))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({

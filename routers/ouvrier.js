@@ -11,7 +11,7 @@ const db = require('../app/models');
 //getting the list of object Ouvrier
 //tested and works
 router.get('/', function(req, res){
-let query = `SELECT nom, prenom, numero, email, nomSpecialite
+let query = `SELECT idPersonne, nom, prenom, numero, email, nomSpecialite
 FROM Personne p, ouvrier o, Specialite s 
 where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) )`;
 db.connection.query(query, function(err, data, fields) {
@@ -48,7 +48,7 @@ router.get('/email/:email/travaille', function(req, res){
 //getting the list of object Ouvrier with condition (est libre)
 //tested 
 router.get('/libre', function(req, res){
-  let query = `SELECT nom, prenom, numero, email, nomspecialite
+  let query = `SELECT idPersonne,nom, prenom, numero, email, nomspecialite
   FROM Personne p, ouvrier o, Specialite s
   where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (not exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (t.tache in (select idTache from tache where termine = 0))))))`;
   db.connection.query(query, function(err, data, fields) {
@@ -64,7 +64,7 @@ router.get('/libre', function(req, res){
   //getting the list of object Ouvrier with condition (est occupe)
   //tested and works
 router.get('/occupe', function(req, res){
-  let query = `SELECT nom, prenom, numero, email, nomspecialite
+  let query = `SELECT idPersonne, nom, prenom, numero, email, nomspecialite
   FROM Personne p, ouvrier o, Specialite s
   where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (t.tache in (select idTache from tache where termine = 0))))))`;
   db.connection.query(query, function(err, data, fields) {
