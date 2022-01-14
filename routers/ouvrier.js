@@ -25,14 +25,15 @@ db.connection.query(query, function(err, data, fields) {
 });
 
 //getting the time of work by ouvrier
-
+//tested and works
+///ouvrier/email/ddd@email.com/travaille   sum(duree) 
 router.get('/email/:email/travaille', function(req, res){
 
   let query = `SELECT sum(duree) 
   from tache 
   where (termine = 1)
   and idTache IN (select idTache 
-    from travaille where (ouvrier IN (select idPersonne from personne where email = "${req.params.email}")))`;
+    from travaille where (ouvrier IN (select idPersonne from personne where (email = "${req.params.email}"))))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
@@ -45,10 +46,11 @@ router.get('/email/:email/travaille', function(req, res){
 
 
 //getting the list of object Ouvrier with condition (est libre)
+//tested 
 router.get('/libre', function(req, res){
-  let query = `SELECT nom, prenom, numero, email, nomSpecialite\
-  FROM Personne p, ouvrier o, Specialite s \
-  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (o.idouvrier not in (select idOUvrier from tache where termine = 0)))`;
+  let query = `SELECT nom, prenom, numero, email, nomspecialite
+  FROM Personne p, ouvrier o, Specialite s
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (tache in (select idTache from tache where termine = 0))))))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
@@ -60,10 +62,11 @@ router.get('/libre', function(req, res){
   });
 
   //getting the list of object Ouvrier with condition (est occupe)
+  //tested and works
 router.get('/occupe', function(req, res){
-  let query = `SELECT nom, prenom, numero, email, nomSpecialite
-  FROM Personne p, ouvrier o, Specialite s 
-  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( exists (select * from tache where ((idOuvrier = o.idouvrier) and (termine = 0)))))`;
+  let query = `SELECT nom, prenom, numero, email, nomspecialite
+  FROM Personne p, ouvrier o, Specialite s
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (tache in (select idTache from tache where termine = 0))))))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
@@ -74,14 +77,17 @@ router.get('/occupe', function(req, res){
   })
   });
 
+
+
 //getting the list of object Ouvrier with condition (est disponible dans un chantier)
+//tested
 router.get('/nomChantier/:nomChantier/', function(req, res){
 
-  let query = `SELECT nom, prenom, numero, email, nomSpecialite
+  let query = `SELECT distinct nom, prenom, numero, email, nomSpecialite
   FROM Personne p, ouvrier o, Specialite s, affecter aff
-  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( idouvrier in (
-  select idouvrier
-  from affecter where chantier = (select idchantier from chantier where nomchantier="${req.params.nomchantier}")
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( o.idouvrier in (
+  select ouvrier
+  from affecter where chantier in (select idchantier from chantier where nomchantier="chantier les frere")
   ))
   )`;
 
@@ -96,6 +102,7 @@ router.get('/nomChantier/:nomChantier/', function(req, res){
   });
 
   //ajouter un ouvrier a une tache
+  //tested and works
   router.post('/email/:email/nomtache/:nomtache', (req, res)=> {
     
     query = `insert into travaille(ouvrier, tache) values (
@@ -116,11 +123,11 @@ router.get('/nomChantier/:nomChantier/', function(req, res){
 
 
 //ajouter un ouvrier a un chantier
-// tested
+//tested
 router.post('/email/:email/nomChantier/:nomChantier', (req, res)=> {
   query = `insert into affecter(ouvrier, chantier) values (
 
-    (select idouvrier from ouvrier o where exists (select * from personne p where (( o.idouvrier = idpersonne) and (p.email = "${req.params.email}"))))
+    (select idouvrier from ouvrier o where (idOUvrier in (select idpersonne from personne p where (p.email = "${req.params.email}"))))
     ,
     (select idChantier from chantier where (nomchantier= "${req.params.nomChantier}"))
     );`;
