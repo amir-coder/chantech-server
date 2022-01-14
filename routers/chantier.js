@@ -217,6 +217,22 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
     });
 
 
+//delete chantier
+router.delete("/id/:id", function(req, res) {
+
+  let query = 
+  `delete from chantier where (idChantier = ${req.params.id})`;
+
+
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "Chantier est maintenant supprimer!"
+    });
+  })
+});
+
     //ALTER TABLE chantier DROP foreign key
 
 //chantier_ibfk_1

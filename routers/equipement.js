@@ -53,4 +53,20 @@ router.put("/numEquipement/:numEquipement/ndArticle/:nbArticle", function(req, r
 });
 
 
+//delete chantier
+router.delete("/id/:id", function(req, res) {
+
+  let query = 
+  `delete from equipement where (idequipement = ${req.params.id})`;
+
+
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "equipement est maintenant supprimer!"
+    });
+  })
+});
+
 module.exports = router;
