@@ -117,6 +117,47 @@ router.get('/courant', function(req, res) {
   })
   });
 
+  //getting the list of object Chantier courant
+  router.get('/info/id/:id', function(req, res) {
+    let query = `SELECT 
+    p1.idPersonne as 'idProprietaire',
+    p1.nom as 'nomProprietaire',
+    p1.prenom as 'prenomProprietaire',
+    p1.numero as 'numeroProprietaire',
+    p1.email as 'emailProprietaire',
+    p1.mdp as 'mdpProprietaire',
+    p1.email as 'emailProprietaire',
+    p2.idPersonne as 'idResponsable',
+    p2.nom as 'nomResponsable',
+    p2.prenom as 'prenomResponsable',
+    p2.numero as 'numeroResponsable',
+    p2.email as 'emailResponsable',
+    p2.mdp as 'mdpResponsable',
+    p2.email as 'emailResponsable',
+    idChantier,
+    nomChantier,
+    proprietaire,
+    responsable,
+    fermer,
+    address
+    FROM chantier ch, personne p1, personne p2 where ((ch.idchantier = ${req.params.id})and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
+    datatosend = []
+    // {
+    //   data = {},
+    //   responsable = {},
+    //   proprietaire = {}
+    // }
+    db.connection.query(query, function(err, data, fields)  {
+      if(err) throw err;
+        res.json({
+          status: 200,
+          data,
+          message: "Object Chantier list retrieved successfully"
+        });
+      
+    })
+    });
+
 //installe equipement in chantier
 //tested and works
 router.post("/chantier/:nomChantier/nomEquipement/:nomEquipement/nombreArticle/:nombreArticle", function(req, res) {
