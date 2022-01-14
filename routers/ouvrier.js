@@ -66,7 +66,7 @@ router.get('/libre', function(req, res){
 router.get('/occupe', function(req, res){
   let query = `SELECT nom, prenom, numero, email, nomspecialite
   FROM Personne p, ouvrier o, Specialite s
-  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (tache in (select idTache from tache where termine = 0))))))`;
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (t.tache in (select idTache from tache where termine = 0))))))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
