@@ -21,6 +21,33 @@ db.connection.query(query, function(err, data, fields) {
 })
 });
 
+
+//getting the list of object Chantier termminer
+router.get('/fermer', function(req, res){
+  let query = "SELECT * FROM chantier where fermer =1";
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object Chantier list retrieved successfully"
+    })
+  })
+  });
+
+  //getting the list of object Chantier courant
+router.get('/courant', function(req, res){
+  let query = "SELECT * FROM chantier where fermer = 0";
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object Chantier list retrieved successfully"
+    })
+  })
+  });
+
 //installe equipement in chantier
 router.post("/chantier/:nomChantier/nomEquipement/:nomEquipement/nombreArticle/:nombreArticle", function(req, res) {
 
