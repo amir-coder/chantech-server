@@ -55,7 +55,7 @@ router.get("/email/:email", function(req, res) {
     if (data.length === 0) {
       //send message that user does not existe
       res.json({
-        status: 100,
+        status: 120,
         message: "ouvrier n'existe pas!"
       });
     }else{
