@@ -179,7 +179,6 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
               message: "New Object Chantier Added successfully!"
             });
           })
-
         }
       });
     }
@@ -200,6 +199,22 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
     });
   })
   });
+
+
+  router.put("/setfermer/idChantier/:idChantier", function(req, res) {
+
+    let query = 
+    `update chantier set fermer = 1 where (idChantier = "${req.params.idChantier}")`;
+  
+  
+    db.connection.query(query, function(err, data, fields) {
+      if (err) throw err;
+      res.json({
+        status: 200,
+        message: "Chantier est maintenant fermer!"
+      });
+    })
+    });
 
 
 module.exports = router;
