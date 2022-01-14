@@ -43,7 +43,27 @@ router.get('/idChantier/:idChantier/equipement', function(req, res){
 
 //getting the list of object Chantier termminer
 router.get('/fermer', function(req, res){
-  let query = "SELECT * FROM chantier where fermer =1";
+  let query = `SELECT 
+  p1.idPersonne as 'idProprietaire',
+  p1.nom as 'nomProprietaire',
+  p1.prenom as 'prenomProprietaire',
+  p1.numero as 'numeroProprietaire',
+  p1.email as 'emailProprietaire',
+  p1.mdp as 'mdpProprietaire',
+  p1.email as 'emailProprietaire',
+  p2.idPersonne as 'idResponsable',
+  p2.nom as 'nomResponsable',
+  p2.prenom as 'prenomResponsable',
+  p2.numero as 'numeroResponsable',
+  p2.email as 'emailResponsable',
+  p2.mdp as 'mdpResponsable',
+  p2.email as 'emailResponsable',
+  idChantier,
+  nomChantier,
+  proprietaire,
+  responsable,
+  address
+  FROM chantier, personne p1, personne p2 where ((fermer = 1)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
@@ -54,16 +74,64 @@ router.get('/fermer', function(req, res){
   })
   });
 
+  async function reformattingdata(data) {
+    datatosend = [];
+    let i = 0;
+    if (data.length ===0) {
+      for(i=0; i++; i< data.length) {
+        datatosend[i].chantier = data;
+        let query = `SELECT * FROM personne where idPersonne = ${datatosend[i].responsable} `;
+        db.connection.query(query, function(err, data1, fields) {
+          if(err) throw err;
+          datatosend[i].responsable = data1[0];
+          let query = `SELECT * FROM personne where idPersonne = ${datatosend[i].proprietaire} `;
+          db.connection.query(query, function(err, data2, fields) {
+            if(err) throw err;
+            datatosend[i].proprietaire = data2[0];
+          });
+        });
+      }
+    }
+    return datatosend;
+  }
+
   //getting the list of object Chantier courant
-router.get('/courant', function(req, res){
-  let query = "SELECT * FROM chantier where fermer = 0";
-  db.connection.query(query, function(err, data, fields) {
+router.get('/courant', function(req, res) {
+  let query = `SELECT 
+  p1.idPersonne as 'idProprietaire',
+  p1.nom as 'nomProprietaire',
+  p1.prenom as 'prenomProprietaire',
+  p1.numero as 'numeroProprietaire',
+  p1.email as 'emailProprietaire',
+  p1.mdp as 'mdpProprietaire',
+  p1.email as 'emailProprietaire',
+  p2.idPersonne as 'idResponsable',
+  p2.nom as 'nomResponsable',
+  p2.prenom as 'prenomResponsable',
+  p2.numero as 'numeroResponsable',
+  p2.email as 'emailResponsable',
+  p2.mdp as 'mdpResponsable',
+  p2.email as 'emailResponsable',
+  idChantier,
+  nomChantier,
+  proprietaire,
+  responsable,
+  address
+  FROM chantier, personne p1, personne p2 where ((fermer = 0)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
+  datatosend = []
+  // {
+  //   data = {},
+  //   responsable = {},
+  //   proprietaire = {}
+  // }
+  db.connection.query(query, function(err, data, fields)  {
     if(err) throw err;
-    res.json({
-      status: 200,
-      data,
-      message: "Object Chantier list retrieved successfully"
-    })
+      res.json({
+        status: 200,
+        data,
+        message: "Object Chantier list retrieved successfully"
+      });
+    
   })
   });
 
