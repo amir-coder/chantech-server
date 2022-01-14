@@ -154,14 +154,14 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
     }else{
       //proprietaire existe
       //verifier responsable
-      let query = `select * from personne where email = ${req.params.emailrespo}`;
+      let query = `select * from personne where email = "${req.params.emailrespo}"`;
       db.connection.query(query, function(err, data, fields) {
         if(data.length === 0) {
           //responsable n'existe pas
-      res.json({
-        status: 100,
-        message: "Responsable n'existe pas."
-      });
+          res.json({
+            status: 100,
+            message: "Responsable n'existe pas."
+          });
         }else{
           //responsable existe
 
@@ -183,11 +183,6 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
         }
       });
     }
-    if (err) throw err;
-    res.json({
-      status: 200,
-      message: "New Object Chantier Added successfully!"
-    });
   })
 
   });
