@@ -9,7 +9,6 @@ const db = require('../app/models');
 
 
 //getting the list of object Chantier
-
 router.get('/', function(req, res){
 let query = "SELECT * FROM chantier";
 db.connection.query(query, function(err, data, fields) {
@@ -23,12 +22,13 @@ db.connection.query(query, function(err, data, fields) {
 });
 
 //installe equipement in chantier
-router.post("/chantier/:nomChantier/equipement/:nomEquipement", function(req, res) {
+router.post("/chantier/:nomChantier/nomEquipement/:nomEquipement/nombreArticle/:nombreArticle", function(req, res) {
 
 let query = `
-insert into installer (chantier, Equipement) values (
-  (select idchantier from chantier where (nomChantier="${req.params.nomchantier}")), 
-  (select idEquipement from equipement where (libele = "${req.params.nomchantier}"))
+insert into installer (chantier, Equipement, nombreArticle) values (
+  (select idchantier from chantier where (nomChantier="${req.params.nomChantier}")), 
+  (select idEquipement from equipement where (libele = "${req.params.nomEquipement}")),
+  ${req.params.nombreArticle}
   )`;
 
 db.connection.query(query, function(err, data, fields) {

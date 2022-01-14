@@ -9,6 +9,7 @@ const db = require('../app/models');
 
 
 //getting the list of object EQUIPEMENT
+//tested and works
 router.get('/', function(req, res){
 let query = "SELECT * FROM EQUIPEMENT";
 db.connection.query(query, function(err, data, fields) {
@@ -22,16 +23,11 @@ db.connection.query(query, function(err, data, fields) {
 });
 
 //create new equipement
-router.post("/", function(req, res) {
+//tested and works
+router.post("/numEquipement/:numEquipement/libele/:libele/prix/:prix/nbArticle/:nbArticle", function(req, res) {
 
-let values = [
-  req.body.numEquipement,
-  req.body.libele,
-  req.body.prix,
-  req.body.nbArticle
-];
 
-let query = `insert into equipement (numEquipement, libele, prix, nbArticle) values (${values[0]} ,"${values[1]}", ${values[2]}, ${values[3]});# 1 ligne affectée.`;
+let query = `insert into equipement (numEquipement, libele, prix, nb_echantillon) values (${req.params.numEquipement} ,"${req.params.libele}", ${req.params.prix}, ${req.params.nbArticle});# 1 ligne affectée.`;
 
 db.connection.query(query, function(err, data, fields) {
   if (err) throw err;
@@ -43,8 +39,10 @@ db.connection.query(query, function(err, data, fields) {
 });
 
 //updating number of articles
+//tested and works
 router.put("/numEquipement/:numEquipement/ndArticle/:nbArticle", function(req, res) {
-  query = `update Equipement set nbArticle = ${req.params.nbArticle} where (numEquipement = ${req.params.nbArticle})`;
+  console.log(`numEquipement: ${req.params.numEquipement}, nbArticle:  ${req.params.nbArticle}`);
+  query = `update Equipement set nb_echantillon = ${req.params.nbArticle} where (numEquipement = ${req.params.numEquipement})`;
   db.connection.query(query, function(err, data, fields) {
     if (err) throw err;
     res.json({
