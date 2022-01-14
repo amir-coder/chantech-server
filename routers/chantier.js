@@ -257,6 +257,23 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
     })
     });
 
+ //get time de travaille
+router.get('/id/:id/travaille', function(req, res){
+
+  let query = `SELECT sum(duree) 
+  from tache 
+  where ((termine = 1)
+  and (idchantier = ${req.params.id}))`;
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Ouvrier list retrieved successfully"
+    })
+  })
+  });
+
 
 //delete chantier
 router.delete("/id/:id", function(req, res) {
