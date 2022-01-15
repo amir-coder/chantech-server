@@ -93,55 +93,6 @@ router.get("/email/:email", function(req, res) {
 });
 
 
-//role
-router.get("/email/:email/role/", function(req, res){
-  resdata =  {
-    "admin": 0,
-    "responsable": 0,
-    "chantierRespo": [
-      ""
-    ],
-    "ouvrier": 1,
-    "chantierAffecter": [
-      "",
-    ]
-  };
-
-  //selecting if admin or not
-  query = `select admin from personne where email= "${req.params.email}"`;
-  db.connection.query(query, function(err, data, fields) {
-    if (err) throw err;
-    resdata = (data[0]);
-  });
-
-  query = `select nomChantier from chantier
-  where Responsable in (
-  select idPersonne from personne where email = "${req.params.email}"
-  )`;
-
-  db.connection.query(query, function(err, data, fields) {
-    if (err) throw err;
-    resdata.chantierRespo = data;
-    if (data.length > 0) {
-      resdata.responsable = 0
-    }
-  });
-
-  query = `select nomChantier from chantier
-  where idchantier in (
-  select chantier from affecter where (ouvrier in (select idpersonne from personne where email = "${req.params.email}"))
-  )`;
-
-  db.connection.query(query, function(err, data, fields) {
-    if (err) throw err;
-    resdata.chantierAffecter = data;
-  });
-
-  res.json({
-    status: 200,
-    message: "Action complete successfully!"
-  });
-});
 
 
 //create new personne
