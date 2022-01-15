@@ -146,6 +146,39 @@ router.get("/libre", function (req, res) {
   });
 });
 
+//getting the list of object Ouvrier with condition (est libre)
+//tested
+router.get("/responsable", function (req, res) {
+  let query = `SELECT idPersonne,nom, prenom, numero, email, nomSpecialite
+  FROM Personne p, ouvrier o, Specialite s
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (o.idOUvrier IN (select responsable from travaille)))`;
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "user list retrieved successfully",
+    });
+  });
+});
+
+//getting the list of object Ouvrier with condition (est libre)
+//tested
+router.get("/nonResponsable", function (req, res) {
+  let query = `SELECT idPersonne,nom, prenom, numero, email, nomSpecialite
+  FROM Personne p, ouvrier o, Specialite s
+  where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (o.idOUvrier NOT IN (select responsable from travaille)))`;
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "user list retrieved successfully",
+    });
+  });
+});
+
+
 //getting the list of object Ouvrier with condition (est occupe)
 //tested and works
 router.get("/occupe", function (req, res) {
@@ -367,6 +400,7 @@ router.put(
     email = "${req.params.email}"
      where (idPersonne = ${req.params.id})`;
             db.connection.query(query1, function (err, data, fields) {
+              if (err) throw err;
               let query2 = `select idSpecialite from specialite where nomSpecialite = "${req.params.specialite}"`;
 
               db.connection.query(query2, function (err, data1, fields) {
