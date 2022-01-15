@@ -151,6 +151,19 @@ router.delete("/tacheId/:tacheID/ouvrierid/:ouvrierid", function (req, res) {
   });
 });
 
+//tested and works
+router.delete("/tacheId/:tacheID", function (req, res) {
+  let query = `DELETE FROM tache WHERE idtache = ${req.params.tacheID};`;
+
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "Ouvrier supprimer du tache avec succee!",
+    });
+  });
+});
+
 ///tache/chantier/toure eiffel/nomTache//emailOuvrier/bbb@email.com
 
 module.exports = router;
