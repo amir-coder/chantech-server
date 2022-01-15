@@ -92,10 +92,10 @@ router.put("/setTerminer/nomTache/:nomTache", function (req, res) {
 //affecter une tache a un ouvrier dans un chantier
 
 router.post(
-  "/chantier/:nomChantier/nomTache/:nomTache/emailOuvrier/:emailOuvrier",
+  "idTache/:idTache/idOuvrier/:idOuvrier",
   function (req, res) {
     //check if ouvrier existe
-    query = `select * from personne where email= "${req.params.emailOuvrier}"`;
+    query = `select * from personne where idPersonne= ${req.params.idOuvrier}`;
 
     db.connection.query(query, function (err, data, fields) {
       if (err) throw err;
@@ -107,49 +107,29 @@ router.post(
         });
       } else {
         //ouvrier existe
-
-        //check if chantier existe
-        query = `select * from chantier where nomchantier= "${req.params.nomChantier}"`;
+        
+        query = `select * from tache where idTache= ${req.params.idTache}`;
 
         db.connection.query(query, function (err, data, fields) {
           if (err) throw err;
           if (data.length === 0) {
-            //chantier n'existe pas
+            //tache n'existe pas
             res.json({
               status: 100,
-              message: "chantier n'existe pas",
+              message: "tache n'existe pas",
             });
           } else {
-            //chantier existe
-            //check if tache existe
-            query = `select * from tache where nom= "${req.params.nomTache}"`;
-
+            //tache existe
+            //inserting
+            let query = `insert into travaille(tache, ouvrier) values (
+              ${req.params.idTache},
+              ${req.params.idOuvrier})`;
             db.connection.query(query, function (err, data, fields) {
               if (err) throw err;
-              if (data.length === 0) {
-                //tache n'existe pas
-                res.json({
-                  status: 100,
-                  message: "tache n'existe pas",
-                });
-              } else {
-                //tache existe
-                //inserting
-                let query = `insert into travaille(tache, ouvrier) values (
-            (select idTache from tache where (nom= "${req.params.nomTache}")),
-            (select ouvrier from Affecter a where (
-              (exists (select idChantier from chantier where (nomchantier= "${req.params.nomChantier}")))
-              and (exists (select * from personne p where ( (a.ouvrier = p.idpersonne) and ( p.email = "${req.params.emailOuvrier}" ) ) ))
-                )))`;
-
-                db.connection.query(query, function (err, data, fields) {
-                  if (err) throw err;
-                  res.json({
-                    status: 200,
-                    message: "Tache affecter avec succee!",
-                  });
-                });
-              }
+              res.json({
+                status: 200,
+                message: "Tache affecter avec succee!",
+              });
             });
           }
         });
