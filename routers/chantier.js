@@ -343,8 +343,8 @@ router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:
 
           let query = `update chantier set 
           nomchantier = "${req.params.nomChantier}",
-          proprietaire ="${req.params.emailpro}", 
-          responsable = "${req.params.emailrespo}", 
+          proprietaire = (select idPersonne from personne where email = "${req.params.emailpro}"), 
+          responsable = (select idPersonne from personne where email = "${req.params.emailrespo}"), 
           address = "${req.params.address}";`;
           
           db.connection.query(query, function(err, data, fields) {
