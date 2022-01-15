@@ -40,6 +40,36 @@ router.get('/idChantier/:idChantier/equipement', function(req, res){
   })
   });
 
+  router.get("/id/:id/libre", function (req, res) {
+    let query = `SELECT idPersonne,nom, prenom, numero, email, nomspecialite
+    FROM Personne p, ouvrier o, Specialite s
+    where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (p.idPersonne IN (select ouvrier from affecter where chantier = ${req.params.id})) and (not exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (t.tache in (select idTache from tache where termine = 0))))))`;
+    db.connection.query(query, function (err, data, fields) {
+      if (err) throw err;
+      res.json({
+        status: 200,
+        data,
+        message: "user list retrieved successfully",
+      });
+    });
+  });
+  
+  //getting the list of object Ouvrier with condition (est occupe)
+  //tested and works
+  router.get("/id/:id/occupe", function (req, res) {
+    let query = `SELECT idPersonne, nom, prenom, numero, email, nomspecialite
+    FROM Personne p, ouvrier o, Specialite s
+    where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (p.idPersonne IN (select ouvrier from affecter where chantier = ${req.params.id})) and (exists (select * from travaille t where ((t.Ouvrier = o.idouvrier) and (t.tache in (select idTache from tache where termine = 0))))))`;
+    db.connection.query(query, function (err, data, fields) {
+      if (err) throw err;
+      res.json({
+        status: 200,
+        data,
+        message: "user list retrieved successfully",
+      });
+    });
+  });
+  
   //getting the list of object tache in chantier
 router.get('/idChantier/:idChantier/tacheTerminer', function(req, res){
   let query = `SELECT * FROM Tache where ((idchantier =  ${req.params.idChantier}) and (termine = 1))`;
@@ -285,7 +315,7 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
 
 //ajouter un chantier
 //tested and works
-router.put("/idchantier/:idchantier/emailproprietaire/:emailpro/emailresponsable/:emailrespo/address/:address", function(req, res) {
+router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:emailpro/emailresponsable/:emailrespo/address/:address", function(req, res) {
   
   let query = `select * from personne where email = "${req.params.emailpro}"`;
   
@@ -314,19 +344,14 @@ router.put("/idchantier/:idchantier/emailproprietaire/:emailpro/emailresponsable
           let query = `update chantier set 
           nomchantier = "${req.params.nomChantier}",
           proprietaire ="${req.params.emailpro}", 
-          responsable, 
-          address values ( 
-            ,
-            (select idPersonne from personne where email="${req.params.emailpro}"), 
-            (select idPersonne from personne where email = "${req.params.emailrespo}"),
-            "${req.params.address}"
-            );`;
+          responsable = "${req.params.emailrespo}", 
+          address = "${req.params.address}";`;
           
           db.connection.query(query, function(err, data, fields) {
             if (err) throw err;
             res.json({
               status: 200,
-              message: "New Object Chantier modified successfully!"
+              message: "Object Chantier modified successfully!"
             });
           })
         }
