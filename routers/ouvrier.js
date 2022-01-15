@@ -40,6 +40,24 @@ router.get("/email/:email/travaille", function (req, res) {
       message: "Ouvrier list retrieved successfully",
     });
   });
+});//tested and works
+///ouvrier/email/ddd@email.com/travaille   sum(duree)
+router.get("/idOuvrier/:idOuvrier/travaille", function (req, res) {
+  //'heureTravaillerChantier'
+
+  let query = `SELECT sum(duree) as 'heureTravailleOuvrier'
+  from tache 
+  where (termine = 1)
+  and idTache IN (select idTache 
+    from travaille where (ouvrier = ${req.params.idOuvrier} ))`;
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Ouvrier list retrieved successfully",
+    });
+  });
 });
 
 //role
