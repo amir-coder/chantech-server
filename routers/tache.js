@@ -63,7 +63,7 @@ router.get("/idChantier/:idChantier", function (req, res) {
 router.post(
   "/chantier/:chantier/nom/:nom/duree/:duree/description/:description",
   function (req, res) {
-    let query = `INSERT INTO Tache(idchantier,nom, duree, description) values ((select idchantier from chantier where nomchantier="${req.params.chantier}"), "${req.params.nom}", ${req.params.duree}, "${req.params.description}")`;
+    let query = `INSERT INTO Tache(idchantier,nom, duree, description) values (${req.params.chantier}, "${req.params.nom}", ${req.params.duree}, "${req.params.description}")`;
 
     db.connection.query(query, function (err, data, fields) {
       if (err) throw err;
