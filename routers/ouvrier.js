@@ -42,6 +42,56 @@ router.get("/email/:email/travaille", function (req, res) {
   });
 });
 
+//role
+router.get("/idOuvrier/:idOuvrier/role/", function(req, res){
+  resdata =  {
+    "admin": 0,
+    "responsable": 0,
+    "chantierRespo": [
+      ""
+    ],
+    "ouvrier": 1,
+    "chantierAffecter": [
+      "",
+    ]
+  };
+
+  //selecting if admin or not
+  query = `select admin from personne where email= "${req.params.email}"`;
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    resdata.admin = (data[0]);
+
+    query = `select nomChantier from chantier
+    where Responsable in (
+    select idPersonne from personne where email = "${req.params.email}"
+    )`;
+  
+    db.connection.query(query, function(err, data, fields) {
+      if (err) throw err;
+      resdata.chantierRespo = data;
+      if (data.length > 0) {
+        resdata.responsable = 0
+      }
+    });
+  
+    query = `select nomChantier from chantier
+    where idchantier in (
+    select chantier from affecter where (ouvrier in (select idpersonne from personne where email = "${req.params.email}"))
+    )`;
+  
+    db.connection.query(query, function(err, data, fields) {
+      if (err) throw err;
+      resdata.chantierAffecter = data;
+    });
+  
+    res.json({
+      status: 200,
+      message: "Action complete successfully!"
+    });
+  });
+});
+
 //chercher ouvrier
 router.get("/email/:email", function (req, res) {
   //check if ouvrier existe
@@ -140,12 +190,12 @@ router.post("/email/:email/nomtache/:nomtache", (req, res) => {
 
 //ajouter un ouvrier a un chantier
 //tested
-router.post("/email/:email/nomChantier/:nomChantier", (req, res) => {
+router.post("/idOuvrier/:idOuvrier/idChantier/:idChantier", (req, res) => {
   query = `insert into affecter(ouvrier, chantier) values (
 
-    (select idouvrier from ouvrier o where (idOUvrier in (select idpersonne from personne p where (p.email = "${req.params.email}"))))
+    ${req.params.idOuvrier}
     ,
-    (select idChantier from chantier where (nomchantier= "${req.params.nomChantier}"))
+    ${req.params.idChantier}
     );`;
 
   db.connection.query(query, function (err, data, fields) {
