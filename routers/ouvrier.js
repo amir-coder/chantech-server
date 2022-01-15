@@ -100,12 +100,12 @@ router.get("/occupe", function (req, res) {
 
 //getting the list of object Ouvrier with condition (est disponible dans un chantier)
 //tested
-router.get("/nomChantier/:nomChantier/", function (req, res) {
+router.get("/idChantier/:idChantier/", function (req, res) {
   let query = `SELECT distinct idPersonne, nom, prenom, numero, email, nomSpecialite
   FROM Personne p, ouvrier o, Specialite s, affecter aff
   where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and ( o.idouvrier in (
   select ouvrier
-  from affecter where chantier in (select idchantier from chantier where nomchantier="chantier les frere")
+  from affecter where chantier = ${req.params.idChantier}
   ))
   )`;
 

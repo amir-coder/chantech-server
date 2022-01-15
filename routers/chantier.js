@@ -234,6 +234,53 @@ db.connection.query(query, function(err, data, fields) {
 })
 });
 
+//ajouter ouvrier a chantier
+router.post(
+  "idChantier/:idChantier/idOuvrier/:idOuvrier",
+  function (req, res) {
+    //check if ouvrier existe
+    query = `select * from personne where idPersonne= ${req.params.idOuvrier}`;
+
+    db.connection.query(query, function (err, data, fields) {
+      if (err) throw err;
+      if (data.length === 0) {
+        //ouvrier n'existe pas
+        res.json({
+          status: 100,
+          message: "Ouvrier n'existe pas",
+        });
+      } else {
+        //ouvrier existe
+        
+        query = `select * from chantier where idChantier= ${req.params.idChantier}`;
+
+        db.connection.query(query, function (err, data, fields) {
+          if (err) throw err;
+          if (data.length === 0) {
+            //tache n'existe pas
+            res.json({
+              status: 100,
+              message: "Chantier n'existe pas",
+            });
+          } else {
+            //tache existe
+            //inserting
+            let query = `insert into affecter(chantier, ouvrier) values (
+              ${req.params.idChantier},
+              ${req.params.idOuvrier})`;
+            db.connection.query(query, function (err, data, fields) {
+              if (err) throw err;
+              res.json({
+                status: 200,
+                message: "Ouvrier affecter avec succee!",
+              });
+            });
+          }
+        });
+      }
+    });
+  }
+);
 //ajouter un chantier
 //tested and works
 router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsable/:emailrespo/address/:address", function(req, res) {
