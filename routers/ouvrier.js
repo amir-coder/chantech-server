@@ -267,7 +267,7 @@ router.post(
 //getting the list of object Ouvrier with condition (est libre)
 //tested
 router.get("/info/email/:email", function (req, res) {
-  let query = `SELECT idPersonne,nom, prenom, numero, email, nompecialite
+  let query = `SELECT idPersonne,nom, prenom, numero, email, nomSpecialite
   FROM Personne p, ouvrier o, Specialite s
   where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (p.email = "${req.params.email}") )`;
   db.connection.query(query, function (err, data, fields) {
@@ -281,7 +281,7 @@ router.get("/info/email/:email", function (req, res) {
 });
 
 router.get("/info/id/:id", function (req, res) {
-  let query = `SELECT idPersonne,nom, prenom, numero, email, nomspecialite
+  let query = `SELECT idPersonne,nom, prenom, numero, email, nomSpecialite
     FROM Personne p, ouvrier o, Specialite s
     where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (p.idPersonne =  "${req.params.id}") )`;
   db.connection.query(query, function (err, data, fields) {
