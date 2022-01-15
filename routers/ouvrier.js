@@ -271,31 +271,35 @@ router.put(
     db.connection.query(query1, function (err, data, fields) {
       let query2 = `select idSpecialite from specialite where nomSpecialite = "${req.params.specialite}"`;
 
-      db.connection.query(query2, function (err, data, fields) {
+      db.connection.query(query2, function (err, data1, fields) {
         //checking if specialite existe
-        if (data.length === 0) {
+        if (data1.length === 0) {
           //specialite n'existe pas
           //cree specialite
-          let query21 = `INSERT INTO specialite(nomSpecialite) OUTPUT Inserted.IDspecialite values("${req.params.specialite}")`;
+          let query21 = `INSERT INTO specialite(nomSpecialite) values("${req.params.specialite}");`;
           db.connection.query(query21, function (err, data, fields) {
-            //specialite creer
-            //updating personne info
-            let query211 = `update ouvrier set 
-        specialite = ${data[0].idSpecialite}
-        where (idouvrier = ${req.params.id})`;
-            db.connection.query(query211, function (err, data, fields) {
-              //modified successfully
-              //succee
-              if (err) throw err;
-              res.json({
-                status: 200,
-                message: "Object Ouvrier mofidied successfully!",
+            let query3 = 'SELECT LAST_INSERT_ID() as idSpecialite;';
+            db.connection.query(query3, function (err, data, fields) {
+              //specialite creer
+              //updating personne info
+              console.log(data);
+              let query211 = `update ouvrier set 
+                idspecialite = ${data[0].idSpecialite}
+                where (idouvrier = ${req.params.id})`;
+                db.connection.query(query211, function (err, data, fields) {
+                  //modified successfully
+                  //succee
+                  if (err) throw err;
+                  res.json({
+                    status: 200,
+                    message: "Object Ouvrier mofidied successfully!",
+                  });
+                });
               });
             });
-          });
         } else {
           let query22 = `update ouvrier set 
-        specialite = ${data[0].idSpecialite}
+        idspecialite = ${data1[0].idSpecialite}
         where (idouvrier = ${req.params.id})`;
           db.connection.query(query22, function (err, data, fields) {
             res.json({
