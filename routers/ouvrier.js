@@ -30,6 +30,8 @@ db.connection.query(query, function(err, data, fields) {
 ///ouvrier/email/ddd@email.com/travaille   sum(duree) 
 router.get('/email/:email/travaille', function(req, res){
 
+  //'heureTravaillerChantier'
+
   let query = `SELECT sum(duree) 
   from tache 
   where (termine = 1)
@@ -268,6 +270,25 @@ db.connection.query(query, function(err, data, fields) {
   });
 });
 
+});
+
+//modifier ouvrier
+router.put("/id/:id/nom/:nom/prenom/:prenom/numero/:numero/email/:email", function(req, res) {
+
+  //updating personne info
+  let query = `update personne set 
+  nom = "${req.params.nom}",
+  prenom = "${req.params.prenom}",
+  numero = ${req.params.numero},
+  email = "${req.params.email}"
+   where (idPersonne = "${req.params.id}")`;
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "Object Personne mofidied successfully!"
+    });
+  })
 });
 
 module.exports = router

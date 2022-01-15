@@ -260,7 +260,7 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
  //get time de travaille
 router.get('/id/:id/travaille', function(req, res){
 
-  let query = `SELECT sum(duree) 
+  let query = `SELECT sum(duree) as 'heureTravaillerChantier'
   from tache 
   where ((termine = 1)
   and (idchantier = ${req.params.id}))`;
