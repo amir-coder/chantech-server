@@ -216,12 +216,12 @@ router.get('/courant', function(req, res) {
 
 //installe equipement in chantier
 //tested and works
-router.post("/chantier/:nomChantier/nomEquipement/:nomEquipement/nombreArticle/:nombreArticle", function(req, res) {
+router.post("/idChantier/:idChantier/numEquipement/:numEquipement/nombreArticle/:nombreArticle", function(req, res) {
 
 let query = `
 insert into installer (chantier, Equipement, nombreArticle) values (
-  (select idchantier from chantier where (nomChantier="${req.params.nomChantier}")), 
-  (select idEquipement from equipement where (libele = "${req.params.nomEquipement}")),
+  ${req.params.idChantier}, 
+  (select idEquipement from equipement where (numero = ${req.params.numEquipement})),
   ${req.params.nombreArticle}
   )`;
 
@@ -229,7 +229,7 @@ db.connection.query(query, function(err, data, fields) {
   if (err) throw err;
   res.json({
     status: 200,
-    message: "New Object Chantier Added successfully!"
+    message: "New Object Equipement installed successfully!"
   });
 })
 });
@@ -345,20 +345,20 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
   });
 
 
-  router.put("/setfermer/idChantier/:idChantier", function(req, res) {
+router.put("/setfermer/idChantier/:idChantier", function(req, res) {
 
-    let query = 
-    `update chantier set fermer = 1 where (idChantier = "${req.params.idChantier}")`;
-  
-  
-    db.connection.query(query, function(err, data, fields) {
-      if (err) throw err;
-      res.json({
-        status: 200,
-        message: "Chantier est maintenant fermer!"
-      });
-    })
+  let query = 
+  `update chantier set fermer = 1 where (idChantier = "${req.params.idChantier}")`;
+
+
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "Chantier est maintenant fermer!"
     });
+  })
+  });
 
 //ajouter un chantier
 //tested and works
@@ -419,6 +419,31 @@ router.put("/setFermer/idChantier/:idChantier", function (req, res) {
       message: "Chantier est maintenant fermer!",
     });
   });
+});
+router.put("/idChantier/:idChantier/responsable/:responsable", function (req, res) {
+
+  let searchquery = `select * from chantier where responsable = ${req.params.responsable}`;
+
+  db.connection.query(searchquery, function (err, data, fields) {
+    if(data.lenght = 0){
+      //ouvrier n'est pas un responsable
+      let addquery = `update chantier set responsable = ${req.params.responsable} where (idChanteir = "${req.params.idChantier}")`;
+
+      db.connection.query(addquery, function (err, data, fields) {
+        if (err) throw err;
+        res.json({
+          status: 200,
+          message: " responsable affecter au chantier!",
+        });
+  });
+    }else{
+      //ouvrier existe
+      res.json({
+        status: 100,
+        message: "Ce ouvrier ne peut pas etre un responsable a des chantiers multiple",
+      });
+    }
+    });
 });
 
  //get time de travaille
