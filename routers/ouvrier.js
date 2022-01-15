@@ -40,7 +40,7 @@ router.get("/email/:email/travaille", function (req, res) {
       message: "Ouvrier list retrieved successfully",
     });
   });
-});//tested and works
+}); //tested and works
 ///ouvrier/email/ddd@email.com/travaille   sum(duree)
 router.get("/idOuvrier/:idOuvrier/travaille", function (req, res) {
   //'heureTravaillerChantier'
@@ -61,51 +61,47 @@ router.get("/idOuvrier/:idOuvrier/travaille", function (req, res) {
 });
 
 //role
-router.get("/idOuvrier/:idOuvrier/role/", function(req, res){
-  resdata =  {
-    "admin": 0,
-    "responsable": 0,
-    "chantierRespo": [
-      ""
-    ],
-    "ouvrier": 1,
-    "chantierAffecter": [
-      "",
-    ]
+router.get("/idOuvrier/:idOuvrier/role/", function (req, res) {
+  resdata = {
+    admin: 0,
+    responsable: 0,
+    chantierRespo: [""],
+    ouvrier: 1,
+    chantierAffecter: [""],
   };
 
   //selecting if admin or not
   query = `select admin from personne where email= "${req.params.email}"`;
-  db.connection.query(query, function(err, data, fields) {
+  db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
-    resdata.admin = (data[0]);
+    resdata.admin = data[0];
 
     query = `select nomChantier from chantier
     where Responsable in (
     select idPersonne from personne where email = "${req.params.email}"
     )`;
-  
-    db.connection.query(query, function(err, data, fields) {
+
+    db.connection.query(query, function (err, data, fields) {
       if (err) throw err;
       resdata.chantierRespo = data;
       if (data.length > 0) {
-        resdata.responsable = 0
+        resdata.responsable = 0;
       }
     });
-  
+
     query = `select nomChantier from chantier
     where idchantier in (
     select chantier from affecter where (ouvrier in (select idpersonne from personne where email = "${req.params.email}"))
     )`;
-  
-    db.connection.query(query, function(err, data, fields) {
+
+    db.connection.query(query, function (err, data, fields) {
       if (err) throw err;
       resdata.chantierAffecter = data;
     });
-  
+
     res.json({
       status: 200,
-      message: "Action complete successfully!"
+      message: "Action complete successfully!",
     });
   });
 });
@@ -192,15 +188,15 @@ router.get("/idChantier/:idChantier/", function (req, res) {
 router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
   query1 = `select * from travaille where (tache = ${req.params.idTache} and ouvrier = ${req.params.idOuvrier})`;
 
-  db.connection.query(query1, function (err, data, fields){
-    if(data.length ===0) {
+  db.connection.query(query1, function (err, data, fields) {
+    if (data.length === 0) {
       query = `insert into travaille(ouvrier, tache) values (
     
           ${req.params.idOuvrier}
           ,
           ${req.params.idTache}
           );`;
-    
+
       db.connection.query(query, function (err, data, fields) {
         if (err) throw err;
         res.json({
@@ -208,12 +204,12 @@ router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
           message: "Ouvrier ajouter a la tache!",
         });
       });
-    }else {
+    } else {
       //already affected
-        res.json({
-          status: 200,
-          message: "Ouvrier travaille deja dans la tache!",
-        });
+      res.json({
+        status: 200,
+        message: "Ouvrier travaille deja dans la tache!",
+      });
     }
   });
 });
@@ -223,16 +219,15 @@ router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
 router.post("/idOuvrier/:idOuvrier/idChantier/:idChantier", (req, res) => {
   query1 = `select * from affecter where (chantier = ${req.params.idChantier} and ouvrier = ${req.params.idOuvrier})`;
 
-  db.connection.query(query1, function (err, data, fields){
-    if(data.length ===0) {
-
+  db.connection.query(query1, function (err, data, fields) {
+    if (data.length === 0) {
       query = `insert into affecter(ouvrier, chantier) values (
     
         ${req.params.idOuvrier}
         ,
         ${req.params.idChantier}
         );`;
-    
+
       db.connection.query(query, function (err, data, fields) {
         if (err) throw err;
         res.json({
@@ -240,12 +235,12 @@ router.post("/idOuvrier/:idOuvrier/idChantier/:idChantier", (req, res) => {
           message: "Ouvrier ajouter au chantier!",
         });
       });
-    }else {
+    } else {
       //already affected
-        res.json({
-          status: 200,
-          message: "Ouvrier deja affecter au chantier!",
-        });
+      res.json({
+        status: 200,
+        message: "Ouvrier deja affecter au chantier!",
+      });
     }
   });
 });
@@ -354,54 +349,84 @@ router.delete("/id/:id", function (req, res) {
 router.put(
   "/id/:id/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:specialite",
   function (req, res) {
-    //updating personne info
-    let query1 = `update personne set 
-  nom = "${req.params.nom}",
-  prenom = "${req.params.prenom}",
-  numero = ${req.params.numero},
-  email = "${req.params.email}"
-   where (idPersonne = ${req.params.id})`;
-    db.connection.query(query1, function (err, data, fields) {
-      let query2 = `select idSpecialite from specialite where nomSpecialite = "${req.params.specialite}"`;
+    //verifying if email is duplicated
+    searchemailquery = `select * from personne where ((email = "${req.params.email}") and not (idPersonne = ${req.params.id})`;
+    db.connection.query(searchemailquery, function (err, data, fields) {
+      if (data.lengh === 0) {
+        //email unique
+        searchnumeroquery = `select * from personne where ((numero = ${req.params.numero}) and not (idPersonne = ${req.params.id})`;
+        db.connection.query(searchnumeroquery, function (err, data, fields) {
+          if (data.lengh === 0) {
+            //numero unique
 
-      db.connection.query(query2, function (err, data1, fields) {
-        //checking if specialite existe
-        if (data1.length === 0) {
-          //specialite n'existe pas
-          //cree specialite
-          let query21 = `INSERT INTO specialite(nomSpecialite) values("${req.params.specialite}");`;
-          db.connection.query(query21, function (err, data, fields) {
-            let query3 = 'SELECT LAST_INSERT_ID() as idSpecialite;';
-            db.connection.query(query3, function (err, data, fields) {
-              //specialite creer
-              //updating personne info
-              console.log(data);
-              let query211 = `update ouvrier set 
-                idspecialite = ${data[0].idSpecialite}
-                where (idouvrier = ${req.params.id})`;
-                db.connection.query(query211, function (err, data, fields) {
-                  //modified successfully
-                  //succee
-                  if (err) throw err;
-                  res.json({
-                    status: 200,
-                    message: "Object Ouvrier mofidied successfully!",
+            //updating personne info
+            let query1 = `update personne set 
+    nom = "${req.params.nom}",
+    prenom = "${req.params.prenom}",
+    numero = ${req.params.numero},
+    email = "${req.params.email}"
+     where (idPersonne = ${req.params.id})`;
+            db.connection.query(query1, function (err, data, fields) {
+              let query2 = `select idSpecialite from specialite where nomSpecialite = "${req.params.specialite}"`;
+
+              db.connection.query(query2, function (err, data1, fields) {
+                //checking if specialite existe
+                if (data1.length === 0) {
+                  //specialite n'existe pas
+                  //cree specialite
+                  let query21 = `INSERT INTO specialite(nomSpecialite) values("${req.params.specialite}");`;
+                  db.connection.query(query21, function (err, data, fields) {
+                    let query3 = "SELECT LAST_INSERT_ID() as idSpecialite;";
+                    db.connection.query(query3, function (err, data, fields) {
+                      //specialite creer
+                      //updating personne info
+                      console.log(data);
+                      let query211 = `update ouvrier set 
+                  idspecialite = ${data[0].idSpecialite}
+                  where (idouvrier = ${req.params.id})`;
+                      db.connection.query(
+                        query211,
+                        function (err, data, fields) {
+                          //modified successfully
+                          //succee
+                          if (err) throw err;
+                          res.json({
+                            status: 200,
+                            message: "Object Ouvrier mofidied successfully!",
+                          });
+                        }
+                      );
+                    });
                   });
-                });
+                } else {
+                  let query22 = `update ouvrier set 
+          idspecialite = ${data1[0].idSpecialite}
+          where (idouvrier = ${req.params.id})`;
+                  db.connection.query(query22, function (err, data, fields) {
+                    res.json({
+                      status: 200,
+                      message: "Object Ouvrier mofidied successfully!",
+                    });
+                  });
+                }
               });
             });
-        } else {
-          let query22 = `update ouvrier set 
-        idspecialite = ${data1[0].idSpecialite}
-        where (idouvrier = ${req.params.id})`;
-          db.connection.query(query22, function (err, data, fields) {
+          } else {
+            //refuser le numero
+            //refuser l'email
             res.json({
-              status: 200,
-              message: "Object Ouvrier mofidied successfully!",
+              status: 100,
+              message: "Numero deja utiliser!",
             });
-          });
-        }
-      });
+          }
+        });
+      } else {
+        //refuser l'email
+        res.json({
+          status: 100,
+          message: "Email deja utiliser!",
+        });
+      }
     });
   }
 );
