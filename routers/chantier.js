@@ -360,7 +360,7 @@ router.put("/setfermer/idChantier/:idChantier", function(req, res) {
   })
   });
 
-//ajouter un chantier
+//modifier chantier
 //tested and works
 router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:emailpro/emailresponsable/:emailrespo/address/:address", function(req, res) {
   
@@ -388,6 +388,12 @@ router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:
         }else{
           //responsable existe
 
+  let searchquery = `select * from chantier where responsable = ${req.params.responsable}`;
+
+  db.connection.query(searchquery, function (err, data, fields) {
+    if(data.lenght = 0){
+      //ouvrier n'est pas un responsable
+
           let query = `update chantier set 
           nomchantier = "${req.params.nomChantier}",
           proprietaire = (select idPersonne from personne where email = "${req.params.emailpro}"), 
@@ -400,7 +406,16 @@ router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:
               status: 200,
               message: "Object Chantier modified successfully!"
             });
-          })
+          });
+  
+    }else{
+      //ouvrier existe
+      res.json({
+        status: 100,
+        message: "Ce ouvrier ne peut pas etre un responsable a des chantiers multiple",
+      });
+    }
+    });
         }
       });
     }
@@ -420,6 +435,8 @@ router.put("/setFermer/idChantier/:idChantier", function (req, res) {
     });
   });
 });
+
+
 router.put("/idChantier/:idChantier/responsable/:responsable", function (req, res) {
 
   let searchquery = `select * from chantier where responsable = ${req.params.responsable}`;
@@ -436,6 +453,7 @@ router.put("/idChantier/:idChantier/responsable/:responsable", function (req, re
           message: " responsable affecter au chantier!",
         });
   });
+  
     }else{
       //ouvrier existe
       res.json({
