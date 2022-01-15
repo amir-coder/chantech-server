@@ -407,7 +407,19 @@ router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:
   })
 
   });
+//rendre chantier fermer
+//tested and works
+router.put("/setFermer/idChantier/:idChantier", function (req, res) {
+  let query = `update chantier set fermer = 1 where (idChanteir = "${req.params.idChantier}")`;
 
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "Chantier est maintenant fermer!",
+    });
+  });
+});
 
  //get time de travaille
 router.get('/id/:id/travaille', function(req, res){

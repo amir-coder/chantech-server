@@ -77,8 +77,8 @@ router.post(
 
 //rendre tache terminer
 //tested and works
-router.put("/setTerminer/nomTache/:nomTache", function (req, res) {
-  let query = `update tache set termine = 1 where (nom = "${req.params.nomTache}")`;
+router.put("/setTerminer/idTache/:idTache", function (req, res) {
+  let query = `update tache set termine = 1 where (idTache = "${req.params.idTache}")`;
 
   db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
