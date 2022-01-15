@@ -171,12 +171,12 @@ router.get("/idChantier/:idChantier/", function (req, res) {
 
 //ajouter un ouvrier a une tache
 //tested and works
-router.post("/email/:email/nomtache/:nomtache", (req, res) => {
+router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
   query = `insert into travaille(ouvrier, tache) values (
 
-      (select idouvrier from ouvrier o where exists (select * from personne p where (( o.idouvrier = idpersonne) and (p.email = "${req.params.email}"))))
+      ${req.params.idOuvrier}
       ,
-      (select idtache from tache where (nom= "${req.params.nomtache}"))
+      ${req.params.idTache}
       );`;
 
   db.connection.query(query, function (err, data, fields) {
