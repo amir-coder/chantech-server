@@ -177,13 +177,10 @@ router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
   db.connection.query(query1, function (err, data, fields){
     if(data.length ===0) {
       //already affected
-      db.connection.query(query, function (err, data, fields) {
-        if (err) throw err;
         res.json({
           status: 200,
           message: "Ouvrier travaille deja dans la tache!",
         });
-      });
     }else {
       query = `insert into travaille(ouvrier, tache) values (
     
@@ -212,13 +209,10 @@ router.post("/idOuvrier/:idOuvrier/idChantier/:idChantier", (req, res) => {
   db.connection.query(query1, function (err, data, fields){
     if(data.length ===0) {
       //already affected
-      db.connection.query(query, function (err, data, fields) {
-        if (err) throw err;
         res.json({
           status: 200,
           message: "Ouvrier deja affecter au chantier!",
         });
-      });
     }else {
 
       query = `insert into affecter(ouvrier, chantier) values (
