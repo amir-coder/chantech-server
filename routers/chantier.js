@@ -40,6 +40,32 @@ router.get('/idChantier/:idChantier/equipement', function(req, res){
   })
   });
 
+  //getting the list of object tache in chantier
+router.get('/idChantier/:idChantier/tacheTerminer', function(req, res){
+  let query = `SELECT * FROM Tache where ((idchantier =  ${req.params.idChantier}) and (termine = 1))`;
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object tache list retrieved successfully"
+    })
+  })
+  });
+
+   //getting the list of object tache in chantier
+router.get('/idChantier/:idChantier/tacheCourant', function(req, res){
+  let query = `SELECT * FROM Tache where ((idchantier =  ${req.params.idChantier}) and (termine = 0))`;
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object tache list retrieved successfully"
+    })
+  })
+  });
+
 
 //getting the list of object Chantier termminer
 router.get('/fermer', function(req, res){
