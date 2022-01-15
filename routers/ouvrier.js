@@ -191,19 +191,36 @@ router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
 //ajouter un ouvrier a un chantier
 //tested
 router.post("/idOuvrier/:idOuvrier/idChantier/:idChantier", (req, res) => {
-  query = `insert into affecter(ouvrier, chantier) values (
+  query1 = `select * from affecter where (chantier = ${req.params.idChantier} and ouvrier = ${req.params.idOuvrier})`;
 
-    ${req.params.idOuvrier}
-    ,
-    ${req.params.idChantier}
-    );`;
+  db.connection.query(query1, function (err, data, fields){
+    if(data.length ===0) {
+      //already affected
+      db.connection.query(query, function (err, data, fields) {
+        if (err) throw err;
+        res.json({
+          status: 200,
+          message: "Ouvrier deja affecter au chantier!",
+        });
+      });
+    }else {
 
-  db.connection.query(query, function (err, data, fields) {
-    if (err) throw err;
-    res.json({
-      status: 200,
-      message: "Ouvrier ajouter au chantier!",
-    });
+      query = `insert into affecter(ouvrier, chantier) values (
+    
+        ${req.params.idOuvrier}
+        ,
+        ${req.params.idChantier}
+        );`;
+    
+      db.connection.query(query, function (err, data, fields) {
+        if (err) throw err;
+        res.json({
+          status: 200,
+          message: "Ouvrier ajouter au chantier!",
+        });
+      });
+
+    }
   });
 });
 
