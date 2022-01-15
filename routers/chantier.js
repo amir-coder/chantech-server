@@ -120,7 +120,7 @@ router.get('/fermer', function(req, res){
   responsable,
   fermer,
   address
-  FROM chantier, personne p1, personne p2 where ((fermer = 1) and (( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))  or (( proprietaire is null ) and (p2.idpersonne = responsable)) or ((responsable is null ) and ( p1.idpersonne = proprietaire)))`;
+  FROM chantier, personne p1, personne p2 where ((fermer = 1) and (( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable)))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
@@ -155,7 +155,7 @@ router.get('/courant', function(req, res) {
   responsable,
   fermer,
   address
-  FROM chantier, personne p1, personne p2 where ((fermer = 0) and (( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))  or (( proprietaire is null ) and (p2.idpersonne = responsable)) or ((responsable is null ) and ( p1.idpersonne = proprietaire)))`;
+  FROM chantier, personne p1, personne p2 where ((fermer = 0) and (( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable)))`;
   datatosend = []
   // {
   //   data = {},

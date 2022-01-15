@@ -366,15 +366,30 @@ router.get("/info/id/:id", function (req, res) {
 });
 
 router.delete("/id/:id", function (req, res) {
-  let query = `delete from ouvrier where idouvrier = ${req.params.id} `;
+  let searchquery = `select * from chantier where responsable = ${req.params.id}`;
 
-  db.connection.query(query, function (err, data, fields) {
+  db.connection.query(searchquery, function (err, data, fields) {
     if (err) throw err;
-    //responding
-    res.json({
-      status: 200,
-      message: "Ouvrier supprimer!",
-    });
+    if(data.lengh == 0){
+      //on peut supprimer
+      let query = `delete from ouvrier where idouvrier = ${req.params.id} `;
+
+      db.connection.query(query, function (err, data, fields) {
+        if (err) throw err;
+        //responding
+        res.json({
+          status: 200,
+          message: "Ouvrier supprimer!",
+        });
+      });
+    }else{
+      //responding
+      res.json({
+        status: 100,
+        message: "On ne peut pas supprimer un ouvrier qui est un responsable",
+      });
+
+    }
   });
 });
 
