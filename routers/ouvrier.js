@@ -172,19 +172,35 @@ router.get("/idChantier/:idChantier/", function (req, res) {
 //ajouter un ouvrier a une tache
 //tested and works
 router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
-  query = `insert into travaille(ouvrier, tache) values (
+  query1 = `select * from travaille where (tache = ${req.params.idTache} and ouvrier = ${req.params.idOuvrier})`;
 
-      ${req.params.idOuvrier}
-      ,
-      ${req.params.idTache}
-      );`;
+  db.connection.query(query1, function (err, data, fields){
+    if(data.length ===0) {
+      //already affected
+      db.connection.query(query, function (err, data, fields) {
+        if (err) throw err;
+        res.json({
+          status: 200,
+          message: "Ouvrier travaille deja dans la tache!",
+        });
+      });
+    }else {
+      query = `insert into travaille(ouvrier, tache) values (
+    
+          ${req.params.idOuvrier}
+          ,
+          ${req.params.idTache}
+          );`;
+    
+      db.connection.query(query, function (err, data, fields) {
+        if (err) throw err;
+        res.json({
+          status: 200,
+          message: "Ouvrier ajouter a la tache!",
+        });
+      });
 
-  db.connection.query(query, function (err, data, fields) {
-    if (err) throw err;
-    res.json({
-      status: 200,
-      message: "Ouvrier ajouter a la tache!",
-    });
+    }
   });
 });
 
