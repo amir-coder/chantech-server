@@ -21,16 +21,28 @@ db.connection.query(query, function(err, data, fields) {
 })
 });
 
-
-//afficher tache par chantier
-router.get('/nomChantier/:nomChantier', function(req, res){
-  let query = `SELECT * FROM Tache where chantier = (select idchantier from chantier where nomchantier = ${req.params.nomChantier})`;
+//getting the list of object Tache
+router.get('/id/:id', function(req, res){
+  let query = `SELECT * FROM Tache where idtache = ${req.params.id}`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
       status: 200,
       data,
-      message: "Tache list retrieved successfully"
+      message: "Tache retrieved successfully"
+    })
+  })
+  });
+
+//afficher tache par chantier
+router.get('/idChantier/:idChantier', function(req, res){
+  let query = `SELECT * FROM Tache where idchantier =  ${req.params.idChantier}`;
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "chantier list retrieved successfully"
     })
   })
   });
