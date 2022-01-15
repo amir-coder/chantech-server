@@ -19,7 +19,7 @@ router.get("/", function (req, res) {
 
 //getting the list of object ouvrier in tache
 router.get("/idTache/:idTache/ouvrier", function (req, res) {
-  let query = `SELECT idPersonne,nom, prenom, numero, email, nomspecialite
+  let query = `SELECT idPersonne,nom, prenom, numero, email, nomSpecialite
   FROM Personne p, ouvrier o, Specialite s
   where ((p.idPersonne = o.idouvrier) and (o.idspecialite = s.idSpecialite) and (p.idPersonne in (select ouvrier from travaille where tache =${req.params.idTache} )) )`;
   db.connection.query(query, function (err, data, fields) {
