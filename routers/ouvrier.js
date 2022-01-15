@@ -176,12 +176,6 @@ router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
 
   db.connection.query(query1, function (err, data, fields){
     if(data.length ===0) {
-      //already affected
-        res.json({
-          status: 200,
-          message: "Ouvrier travaille deja dans la tache!",
-        });
-    }else {
       query = `insert into travaille(ouvrier, tache) values (
     
           ${req.params.idOuvrier}
@@ -196,7 +190,12 @@ router.post("/idOuvrier/:idOuvrier/idTache/:idTache", (req, res) => {
           message: "Ouvrier ajouter a la tache!",
         });
       });
-
+    }else {
+      //already affected
+        res.json({
+          status: 200,
+          message: "Ouvrier travaille deja dans la tache!",
+        });
     }
   });
 });
@@ -208,12 +207,6 @@ router.post("/idOuvrier/:idOuvrier/idChantier/:idChantier", (req, res) => {
 
   db.connection.query(query1, function (err, data, fields){
     if(data.length ===0) {
-      //already affected
-        res.json({
-          status: 200,
-          message: "Ouvrier deja affecter au chantier!",
-        });
-    }else {
 
       query = `insert into affecter(ouvrier, chantier) values (
     
@@ -229,7 +222,12 @@ router.post("/idOuvrier/:idOuvrier/idChantier/:idChantier", (req, res) => {
           message: "Ouvrier ajouter au chantier!",
         });
       });
-
+    }else {
+      //already affected
+        res.json({
+          status: 200,
+          message: "Ouvrier deja affecter au chantier!",
+        });
     }
   });
 });
