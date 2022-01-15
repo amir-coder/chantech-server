@@ -99,7 +99,7 @@ router.get('/idChantier/:idChantier/tacheCourant', function(req, res){
 
 //getting the list of object Chantier termminer
 router.get('/fermer', function(req, res){
-  let query = `SELECT 
+  let query = `SELECT distinct
   p1.idPersonne as 'idProprietaire',
   p1.nom as 'nomProprietaire',
   p1.prenom as 'prenomProprietaire',
@@ -120,7 +120,7 @@ router.get('/fermer', function(req, res){
   responsable,
   fermer,
   address
-  FROM chantier, personne p1, personne p2 where ((fermer = 1)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
+  FROM chantier, personne p1, personne p2 where ((fermer = 1)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable) or (is null proprietaire) or (is null responsable))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
@@ -134,7 +134,7 @@ router.get('/fermer', function(req, res){
 
   //getting the list of object Chantier courant
 router.get('/courant', function(req, res) {
-  let query = `SELECT 
+  let query = `SELECT distinct
   p1.idPersonne as 'idProprietaire',
   p1.nom as 'nomProprietaire',
   p1.prenom as 'prenomProprietaire',
@@ -155,7 +155,7 @@ router.get('/courant', function(req, res) {
   responsable,
   fermer,
   address
-  FROM chantier, personne p1, personne p2 where ((fermer = 0)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
+  FROM chantier, personne p1, personne p2 where ((fermer = 0)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable) or (is null proprietaire) or (is null responsable))`;
   datatosend = []
   // {
   //   data = {},
