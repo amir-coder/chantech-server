@@ -96,8 +96,8 @@ router.get("/email/:email", function(req, res) {
 
 
 //create new personne
-router.post("/nom/:nom/prenom/:prenom/numero/:numero/email/:email", function(req, res) {
-  let query = `INSERT INTO PERSONNE(nom, prenom, numero, email) values ("${req.params.nom}", "${req.params.prenom}", ${req.params.numero}, "${req.params.email}")`;
+router.post("/nom/:nom/prenom/:prenom/numero/:numero/email/:email/mdp/:mdp", function(req, res) {
+  let query = `INSERT INTO PERSONNE(nom, prenom, numero, email, mdp) values ("${req.params.nom}", "${req.params.prenom}", ${req.params.numero}, "${req.params.email}", "${req.params.mdp}")`;
 
   db.connection.query(query, function(err, data, fields) {
     if (err) throw err;
