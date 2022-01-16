@@ -54,7 +54,7 @@ router.put("/numEquipement/:numEquipement/nbArticle/:nbArticle", function(req, r
     }else{
       //equipement existe
       let update = req.params.ndArticle;
-      let old = req.params.numEquipement;
+      let old = data[0].nb_echantillon;
       if (update > old) {
         //update safely
         updatequery = `update Equipement set nb_echantillon = ${req.params.nbArticle} where (numEquipement = ${req.params.numEquipement})`;
@@ -87,37 +87,45 @@ router.put("/numEquipement/:numEquipement/nbArticle/:nbArticle", function(req, r
 router.post("/numEquipement/:numEquipement/chantier/:chantier/nbArticle/:nbArticle", function(req, res){
   //recuperer le nombre d'article dans le stock
   let stock = 0;
-  let stockquery =`select sum(nb_echantillon) as 'stock'  from equipement`;
+  let stockquery =`select sum(nb_echantillon) as 'stock'  from equipement where numEquipement = ${req.params.numEquipement}`;
   db.connection.query(stockquery, function(err, data, fields) {
     if (err) throw err;
     stock = data[0].stock;
     if (stock){
       //stock existe
       //get the number of articles installed in the chantier
-      let getquery = `select sum(nombrebArticle) as 'nombreInstallerChantier' from installed where ((equipement =${req.params.numEquipement}) and (chantier = ${req.params.chantier}))`;
+      let getquery = `select sum(nombreArticle) as 'nombreInstallerChantier' from installer where ((equipement IN (select idEquipement from equipement where numEquipement = ${req.params.numEquipement})) and (chantier = ${req.params.chantier}))`;
       db.connection.query(getquery, function(err, data2, fields){
         if(err) throw err;
-        if(data[0].nombreInstallerChantier){
+        if(!(data2[0].nombreInstallerChantier == null)){
           //equipement deja installer
-          let equipementDansChantier = data[0].nombreInstallerChantier;
+          let equipementDansChantier = data2[0].nombreInstallerChantier;
           stock = stock + equipementDansChantier; 
           //get the new articles number to add
-          let newNumber = req.params.nbArticle;
+          let newNumber = parseInt(req.params.nbArticle);
           //test if adding is possible
-          if(newNumber >= stock) {
+          if(newNumber <= stock) {
             //adding possible
-            let addQueryy = `update installed set nombreArticle = ${newNumber} where ((equipement =${req.params.numEquipement}) and (chantier = ${req.params.chantier}))`;
+            let addQueryy = `update installer set nombreArticle = ${newNumber} where ((equipement IN (select idEquipement from equipement where numEquipement = ${req.params.numEquipement})) and (chantier = ${req.params.chantier}))`;
             db.connection.query(addQueryy, function(err, data2, fields){
               if(err) throw err;
-              //responding
-              res.json({
-                status: 200,
-                message: "Equipement installed successfully!"
+              //updating stock
+              stock = stock - newNumber;
+              updatequery = `update Equipement set nb_echantillon = ${stock} where (numEquipement = ${req.params.numEquipement})`;
+              db.connection.query(updatequery, function(err, data2, fields){
+                if(err) throw err;
+                //responding
+                res.json({
+                  status: 200,
+                  message: "Equipement installed successfully!"
+                });
               });
             });
           }else{
             //adding not possible
             //stock doesn't existe
+            
+            console.log(`condition true stock = ${stock}, data2[0].nombreInstallerChantier = ${data2[0].nombreInstallerChantier}`);
             res.json({
               status: 100,
               message: "Stock is not enaugh for to installe this number of articles"
@@ -126,26 +134,34 @@ router.post("/numEquipement/:numEquipement/chantier/:chantier/nbArticle/:nbArtic
         }else{
           //equipement n'est pas installer deja
           //get the new articles number to add
-          let newNumber = req.params.nbArticle;
+          let newNumber = parseInt(req.params.nbArticle);
           //test if adding is possible
-          if(newNumber >= stock) {
+            console.log(` before comparision check: stock = ${stock}, newNumber = ${newNumber}`);
+          if(newNumber <= stock) {
             //adding possible
-            let addQueryy = `insert into installed(chantier, equipement, nombreArticle) values (
-              ${req.params.chantier},
-              ${req.params.numEquipement},
-              ${newNumber}
+            let addQueryy = `insert into installer(chantier, equipement, nombreArticle) values (
+              ${req.params.chantier},\
+              (select idEquipement from equipement where numEquipement = ${req.params.numEquipement}),\
+              ${newNumber}\
             );`;
             db.connection.query(addQueryy, function(err, data2, fields){
               if(err) throw err;
-              //responding
-              res.json({
-                status: 200,
-                message: "Equipement installed successfully!"
+              //updating stock
+              stock = stock - newNumber;
+              updatequery = `update Equipement set nb_echantillon = ${stock} where (numEquipement = ${req.params.numEquipement})`;
+              db.connection.query(updatequery, function(err, data2, fields){
+                if(err) throw err;
+                //responding
+                res.json({
+                  status: 200,
+                  message: "Equipement installed successfully!"
+                });
               });
             });
           }else{
             //adding not possible
             //stock doesn't existe
+            console.log(`condition false stock = ${stock}, data2[0].nombreInstallerChantier = ${data2[0].nombreInstallerChantier}`);
             res.json({
               status: 100,
               message: "Stock is not enaugh for to installe this number of articles"
