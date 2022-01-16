@@ -22,6 +22,34 @@ db.connection.query(query, function(err, data, fields) {
 })
 });
 
+//getting the list of object EQUIPEMENT
+//tested and works
+router.get('/disponible', function(req, res){
+  let query = "SELECT * FROM EQUIPEMENT where nb_echantillon > 0";
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object EQUIPEMENT list retrieved successfully"
+    })
+  })
+  });
+
+  //getting the list of object EQUIPEMENT
+//tested and works
+router.get('/occupe', function(req, res){
+  let query = "SELECT * FROM EQUIPEMENT where nb_echantillon > 0";
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object EQUIPEMENT list retrieved successfully"
+    })
+  })
+  });
+
 //create new equipement
 //tested and works
 router.post("/numEquipement/:numEquipement/libele/:libele/prix/:prix/nbArticle/:nbArticle", function(req, res) {
