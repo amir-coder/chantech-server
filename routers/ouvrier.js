@@ -370,7 +370,7 @@ router.delete("/id/:id", function (req, res) {
 
   db.connection.query(searchquery, function (err, data, fields) {
     if (err) throw err;
-    if(data.lengh === 0){
+    if(data.length=== 0){
       //on peut supprimer
       let query = `delete from ouvrier where idouvrier = ${req.params.id} `;
 
@@ -383,6 +383,7 @@ router.delete("/id/:id", function (req, res) {
         });
       });
     }else{
+      console.log(data);
       //responding
       res.json({
         status: 100,
