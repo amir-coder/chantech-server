@@ -92,6 +92,31 @@ router.get("/email/:email", function(req, res) {
   });
 });
 
+//chercher personne par num
+router.get("/numero/:numero", function(req, res) {
+  
+  //check if personne existe
+  query = `select * from personne where numero= ${req.params.numero}`;
+
+  db.connection.query(query, function(err, data, fields) {
+    if (err) throw err;
+    if (data.length === 0) {
+      //send message that user does not existe
+      res.json({
+        status: 100,
+        message: "Personne n'existe pas!"
+      });
+    }else{
+      //send resonse
+      res.json({
+        status: 200,
+        data: data,
+        message: "personne existe!"
+      });
+    }
+  });
+});
+
 
 
 
