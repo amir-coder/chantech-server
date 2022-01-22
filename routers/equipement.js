@@ -66,7 +66,6 @@ router.get('/numEquipement/:numEquipement', function(req, res){
 //tested and works
 router.post("/numEquipement/:numEquipement/libele/:libele/prix/:prix/nbArticle/:nbArticle", function(req, res) {
 
-
 let query = `insert into equipement (numEquipement, libele, prix, nb_echantillon) values (${req.params.numEquipement} ,"${req.params.libele}", ${req.params.prix}, ${req.params.nbArticle});# 1 ligne affectée.`;
 
 db.connection.query(query, function(err, data, fields) {
@@ -80,7 +79,7 @@ db.connection.query(query, function(err, data, fields) {
 
 //updating number of articles
 //tested and works
-router.put("/numEquipement/:numEquipement/nbArticle/:nbArticle", function(req, res) {
+router.put("/numEquipement/:numEquipement/nbArticle/:nbArticlee/prix/:prix", function(req, res) {
   searchquery = `select nb_echantillon from equipement where numEquipement = ${req.params.numEquipement}`;
   //getting the number of echantillion in equipement
   db.connection.query(searchquery, function(err, data, fields){
@@ -97,7 +96,7 @@ router.put("/numEquipement/:numEquipement/nbArticle/:nbArticle", function(req, r
       let old = data[0].nb_echantillon;
       if (update > old) {
         //update safely
-        updatequery = `update Equipement set nb_echantillon = ${req.params.nbArticle} where (numEquipement = ${req.params.numEquipement})`;
+        updatequery = `update Equipement set nb_echantillon = ${req.params.nbArticle}, prix= ${req.params.prix} where (numEquipement = ${req.params.numEquipement})`;
         db.connection.query(updatequery, function(err, data, fields) {
           if (err) throw err;
           res.json({
@@ -108,7 +107,7 @@ router.put("/numEquipement/:numEquipement/nbArticle/:nbArticle", function(req, r
       }else{
         //verify if the update is possible
         //update safely
-        updatequery = `update Equipement set nb_echantillon = ${req.params.nbArticle} where (numEquipement = ${req.params.numEquipement})`;
+        updatequery = `update Equipement set nb_echantillon = ${req.params.nbArticle}, prix= ${req.params.prix} where (numEquipement = ${req.params.numEquipement})`;
         db.connection.query(updatequery, function(err, data, fields) {
           if (err) throw err;
           res.json({
