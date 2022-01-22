@@ -39,7 +39,19 @@ router.get('/disponible', function(req, res){
   //getting the list of object EQUIPEMENT
 //tested and works
 router.get('/occupe', function(req, res){
-  let query = "SELECT * FROM EQUIPEMENT where nb_echantillon > 0";
+  let query = "SELECT * FROM EQUIPEMENT where nb_echantillon = 0";
+  db.connection.query(query, function(err, data, fields) {
+    if(err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "Object EQUIPEMENT list retrieved successfully"
+    })
+  })
+  });
+//  tested and works
+router.get('/numEquipement/:numEquipement', function(req, res){
+  let query = `SELECT * FROM EQUIPEMENT where numEquipement = "${req.params.numEquipement}"`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({
