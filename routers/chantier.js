@@ -391,7 +391,7 @@ router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:
   let searchquery = `select * from chantier where responsable = ${req.params.responsable}`;
 
   db.connection.query(searchquery, function (err, data, fields) {
-    if(data.lenght = 0){
+    if(data.lenght === 0){
       //ouvrier n'est pas un responsable
 
           let query = `update chantier set 
