@@ -383,6 +383,7 @@ router.delete("/id/:id", function (req, res) {
         });
       });
     }else{
+      console.log(data);
       //responding
       res.json({
         status: 100,

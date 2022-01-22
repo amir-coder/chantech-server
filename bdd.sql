@@ -17,10 +17,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données: `bd_test_chantier`
+-- Base de données: `bd_test_chantier2`
 --
-CREATE DATABASE `bd_test_chantier` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `bd_test_chantier`;
+CREATE DATABASE `bd_test_chantier2` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `bd_test_chantier2`;
 
 -- --------------------------------------------------------
 
