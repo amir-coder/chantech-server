@@ -388,7 +388,7 @@ router.put("/idchantier/:idchantier/nomChantier/:nomChantier/emailproprietaire/:
         }else{
           //responsable existe
 
-  let searchquery = `select * from chantier where (responsable IN (select idPersonne from personne where email = "${req.params.emailrespo}")and (idchantier= ${req.params.idchantier}))`;
+  let searchquery = `select * from chantier where (responsable IN (select idPersonne from personne where email = "${req.params.emailrespo}") and NOT (idchantier= ${req.params.idchantier}))`;
 
   db.connection.query(searchquery, function (err, data, fields) {
     if(err) throw err;
