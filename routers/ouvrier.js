@@ -480,6 +480,33 @@ router.put(
   }
 );
 
+router.delete("/id/:id/tache/:tache", function (req, res) {
+    let query = `delete from taravaille where (ouvrier = ${req.params.id} and tache =  ${req.params.tache}) `;
+
+    db.connection.query(query, function (err, data, fields) {
+      if (err) throw err;
+      //responding
+      res.json({
+        status: 200,
+        message: "Ouvrier supprimer! de la tache",
+      });
+    });
+});
+
+
+router.delete("/id/:id/chantier/:chantier", function (req, res) {
+    //on peut supprimer
+    let query = `delete from affecter where (ouvrier = ${req.params.id} and chantier =  ${req.params.chantier}) `;
+
+    db.connection.query(query, function (err, data, fields) {
+      if (err) throw err;
+      //responding
+      res.json({
+        status: 200,
+        message: "Ouvrier supprimer du chantier",
+      });
+    });
+});
 module.exports = router;
 
 // alter table installer
