@@ -79,7 +79,7 @@ db.connection.query(query, function(err, data, fields) {
 
 //updating number of articles
 //tested and works
-router.put("/numEquipement/:numEquipement/nbArticle/:nbArticlee/prix/:prix", function(req, res) {
+router.put("/numEquipement/:numEquipement/nbArticle/:nbArticle/prix/:prix", function(req, res) {
   searchquery = `select nb_echantillon from equipement where numEquipement = ${req.params.numEquipement}`;
   //getting the number of echantillion in equipement
   db.connection.query(searchquery, function(err, data, fields){
