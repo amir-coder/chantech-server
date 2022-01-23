@@ -130,6 +130,28 @@ router.get("/idOuvrier/:idOuvrier/responsable", function (req, res) {
   });
 });
 
+//role
+router.get("/idOuvrier/:idOuvrier/affecter", function (req, res) {
+
+  query = `select idchantier from affecter
+  where ((ouvrier = ${req.params.idOuvrier}) and (chantier in (select idchantier from chantier where (fermer = 0))))`;
+
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    if (data.length === 0) {
+      res.json({
+        status: 100,
+        message: "n'est pas un responsable",
+      });
+    }else{
+      res.json({
+        status: 200,
+        data: data,
+        message: "Action complete successfully!",
+      });
+    }
+  });
+});
 
 router.get("/idPersonne/:idPersonne/proprietaire", function (req, res) {
 
