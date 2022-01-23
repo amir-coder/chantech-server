@@ -128,10 +128,6 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
           });
  
         }
-          res.json({
-            status: 200,
-            message: "Mot de passe correct!"
-          });
       }else {
         //mot de passe incorrect
           res.json({
