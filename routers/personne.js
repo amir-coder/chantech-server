@@ -74,13 +74,14 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                   //n'est pas responsable
                   //check if ouvrier
                   query = `select idouvrier from ouvrier
-                  where idouvrier = ${data[0].idPersonne}`;
+                  where ((idouvrier = ${data[0].idPersonne}) and (fermer = 0))`;
                   db.connection.query(query, function (err, dataouvrier, fields){
+                    if(err) throw err;
                     if (dataouvrier.length === 0){
                       //n'est pas un ouvrier
                       //check if proprietaire
                       query = `select idchantier from chantier
-                      where proprietaire = ${data[0].idPersonne}`;
+                      where ((proprietaire = ${data[0].idPersonne}) and (fermer = 0))`;
 
                       db.connection.query(query, function (err, dataproprietaire, fields) {
                         if (err) throw err;
@@ -104,7 +105,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                     }else{
                       //est un ouvrier
                     query = `select chantier from affecter
-                    where ouvrier = ${data[0].idPersonne}`;
+                    where ((ouvrier = ${data[0].idPersonne}) and (fermer = 0))`;
                     db.connection.query(query, function (err, datachantier, fields){
                       res.json({
                         status: 200,
@@ -193,7 +194,7 @@ router.get("/numero/:numero", function(req, res) {
 router.get("/idPersonne/:idPersonne/proprietaire", function (req, res) {
 
   query = `select idchantier from chantier
-  where proprietaire = ${req.params.idPersonne}`;
+  where ((proprietaire = ${req.params.idPersonne})and (fermer = 0))`;
 
   db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
