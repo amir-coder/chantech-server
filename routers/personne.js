@@ -193,8 +193,30 @@ router.get("/numero/:numero", function(req, res) {
 
 router.get("/idPersonne/:idPersonne/proprietaire", function (req, res) {
 
-  query = `select idchantier from chantier
-  where ((proprietaire = ${req.params.idPersonne})and (fermer = 0))`;
+
+  query = `SELECT 
+  p1.idPersonne as 'idProprietaire',
+  p1.nom as 'nomProprietaire',
+  p1.prenom as 'prenomProprietaire',
+  p1.numero as 'numeroProprietaire',
+  p1.email as 'emailProprietaire',
+  p1.mdp as 'mdpProprietaire',
+  p1.email as 'emailProprietaire',
+  p2.idPersonne as 'idResponsable',
+  p2.nom as 'nomResponsable',
+  p2.prenom as 'prenomResponsable',
+  p2.numero as 'numeroResponsable',
+  p2.email as 'emailResponsable',
+  p2.mdp as 'mdpResponsable',
+  p2.email as 'emailResponsable',
+  idChantier,
+  nomChantier,
+  proprietaire,
+  responsable,
+  fermer,
+  address
+  FROM chantier ch, personne p1, personne p2 where ((ch.proprietaire = ${req.params.idPersonne}) and (ch.fermer = 0)and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
+  
 
   db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
