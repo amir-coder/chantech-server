@@ -154,7 +154,7 @@ router.get("/idOuvrier/:idOuvrier/responsable", function (req, res) {
 //role
 router.get("/idOuvrier/:idOuvrier/affecter", function (req, res) {
 
-  query = `select idchantier from affecter
+  query = `select chantier from affecter
   where ((ouvrier = ${req.params.idOuvrier}) and (chantier in (select idchantier from chantier where (fermer = 0))))`;
 
   db.connection.query(query, function (err, data, fields) {
