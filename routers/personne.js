@@ -58,20 +58,65 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
           res.json({
             status: 200,
             role:"admin",
-            data = data,
+            data : data,
             message: "Mot de passe correct!"
           });
 
         }else{
           //is not admin
-          //check if responsable
+          //check if proprietaire
          query = `select idchantier from chantier
           where proprietaire = ${data[0].idPersonne}`;
 
           db.connection.query(query, function (err, data, fields) {
             if (err) throw err;
             if (data.length === 0) {
-              //n'est pas un responsable
+              //n'est pas un proprietaire
+              //check if responsable
+
+              query = `select idchantier from chantier
+              where Responsable = ${data[0].idPersonne}`;
+
+              db.connection.query(query, function (err, data, fields) {
+                if (err) throw err;
+                if (data.length === 0) {
+                  //n'est pas responsable
+                  //check if ouvrier
+                  query = `select idouvrier from ouvrier
+                  where idouvrier = ${data[0].idPersonne}`;
+                  db.connection.query(query, function (err, data, fields){
+                    if (data.length === 0){
+                      //n'est pas un ouvrier
+                      res.json({
+                        status: 100,
+                        role:"<UKN>",
+                        data: data,
+                        message: "Utilisateur n'a pas un role",
+                      });
+                    }else{
+                      //est un ouvrier
+                    query = `select tache from travaille
+                    where ouvrier = ${data[0].idPersonne}`;
+                    db.connection.query(query, function (err, data, fields){
+                      res.json({
+                        status: 200,
+                        role:"ouvrier",
+                        data: data,
+                        message: "Action complete successfully!",
+                      });
+                    });
+                    }
+                  });
+                }else{
+                  res.json({
+                    status: 200,
+                    role:"responsable",
+                    data: data,
+                    message: "Action complete successfully!",
+                  });
+                }
+              });
+
             }else{
               res.json({
                 status: 200,
