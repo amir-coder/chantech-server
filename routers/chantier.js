@@ -26,9 +26,9 @@ db.connection.query(query, function(err, data, fields) {
 
 //getting the list of object equipement in chantier
 router.get('/idChantier/:idChantier/equipement', function(req, res){
-  let query = `SELECT * from equipement, installer i
+  let query = `SELECT * from equipement
   where (idequipement in (
-  select equipement from installer i where (i.chantier = ${req.params.idChantier}
+  select equipement from installer where (chantier = ${req.params.idChantier}
   )))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
