@@ -26,10 +26,10 @@ db.connection.query(query, function(err, data, fields) {
 
 //getting the list of object equipement in chantier
 router.get('/idChantier/:idChantier/equipement', function(req, res){
-  let query = `SELECT libele, prix, numEquipement, nombreArticle from equipement, installer i
-  where ((idequipement in (
+  let query = `SELECT * from equipement, installer i
+  where (idequipement in (
   select equipement from installer i where (i.chantier = ${req.params.idChantier}
-  ))) and (i.equipement = idEquipement))`;
+  )))`;
   db.connection.query(query, function(err, data, fields) {
     if(err) throw err;
     res.json({

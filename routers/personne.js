@@ -52,6 +52,37 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
       //check if mdp is correct
       if(data[0].mdp === req.params.mdp) {
         //mot de passe correct
+        //checking if admin
+        if(data[0].admin = 1){
+          //is admin
+          res.json({
+            status: 200,
+            role:"admin",
+            data = data,
+            message: "Mot de passe correct!"
+          });
+
+        }else{
+          //is not admin
+          //check if responsable
+         query = `select idchantier from chantier
+          where proprietaire = ${data[0].idPersonne}`;
+
+          db.connection.query(query, function (err, data, fields) {
+            if (err) throw err;
+            if (data.length === 0) {
+              //n'est pas un responsable
+            }else{
+              res.json({
+                status: 200,
+                role:"proprietaire",
+                data: data,
+                message: "Action complete successfully!",
+              });
+            }
+          });
+ 
+        }
           res.json({
             status: 200,
             message: "Mot de passe correct!"
@@ -117,6 +148,31 @@ router.get("/numero/:numero", function(req, res) {
   });
 });
 
+
+
+
+router.get("/idPersonne/:idPersonne/proprietaire", function (req, res) {
+
+  query = `select idchantier from chantier
+  where proprietaire = ${req.params.idPersonne}`;
+
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    if (data.length === 0) {
+
+      res.json({
+        status: 100,
+        message: "n'est pas un responsable",
+      });
+    }else{
+      res.json({
+        status: 200,
+        data: data,
+        message: "Action complete successfully!",
+      });
+    }
+  });
+});
 
 
 
