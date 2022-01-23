@@ -184,18 +184,11 @@ router.get("/idOuvrier/:idOuvrier/affecter", function (req, res) {
 
   db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
-    if (data.length === 0) {
-      res.json({
-        status: 100,
-        message: "n'est pas un responsable",
-      });
-    }else{
-      res.json({
-        status: 200,
-        data: data,
-        message: "Action complete successfully!",
-      });
-    }
+    res.json({
+      status: 200,
+      data: data,
+      message: "Action complete successfully!",
+    });
   });
 });
 
