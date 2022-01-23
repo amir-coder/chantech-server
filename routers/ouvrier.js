@@ -177,7 +177,7 @@ router.get("/idOuvrier/:idOuvrier/affecter", function (req, res) {
   fermer,
   address
   FROM chantier ch, personne p1, personne p2 where ((ch.idchantier in (select chantier from affecter
-    where (ouvrier = ${req.params.idOuvrier}))) (ch.fermer = 0) and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
+    where (ouvrier = ${req.params.idOuvrier}))) and (ch.fermer = 0) and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
 
   db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
