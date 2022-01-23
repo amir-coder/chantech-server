@@ -36,7 +36,7 @@ router.get('/idChantier/:idChantier/equipement', function(req, res){
       status: 200,
       data,
       message: "Object Chantier list retrieved successfully"
-    })
+    });
   })
   });
 

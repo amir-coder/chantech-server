@@ -53,7 +53,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
       if(data[0].mdp === req.params.mdp) {
         //mot de passe correct
         //checking if admin
-        if(data[0].admin = 1){
+        if(data[0].admin === 1){
           //is admin
           res.json({
             status: 200,
