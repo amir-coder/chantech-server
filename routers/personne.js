@@ -74,7 +74,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                   //n'est pas responsable
                   //check if ouvrier
                   query = `select idouvrier from ouvrier
-                  where ((idouvrier = ${data[0].idPersonne}) and (fermer = 0))`;
+                  where (idouvrier = ${data[0].idPersonne})`;
                   db.connection.query(query, function (err, dataouvrier, fields){
                     if(err) throw err;
                     if (dataouvrier.length === 0){
