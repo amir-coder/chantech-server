@@ -87,12 +87,29 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                   db.connection.query(query, function (err, dataouvrier, fields){
                     if (dataouvrier.length === 0){
                       //n'est pas un ouvrier
+                      //check if proprietaire
+         query = `select idchantier from chantier
+         where proprietaire = ${data[0].idPersonne}`;
+
+         db.connection.query(query, function (err, dataproprietaire, fields) {
+           if (err) throw err;
+           if (dataproprietaire.length === 0) {
+             //n'est pas un proprietaire
                       res.json({
                         status: 200,
                         role:"<UKN>",
                         data: data,
                         message: "Utilisateur n'a pas un role",
                       });
+                    }else{
+                      res.json({
+                        status: 200,
+                        role:"proprietaire",
+                        data: data,
+                        message: "Action complete successfully!",
+                      });
+                    }
+                  });
                     }else{
                       //est un ouvrier
                     query = `select chantier from affecter
