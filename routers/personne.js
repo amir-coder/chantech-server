@@ -68,24 +68,24 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
          query = `select idchantier from chantier
           where proprietaire = ${data[0].idPersonne}`;
 
-          db.connection.query(query, function (err, data, fields) {
+          db.connection.query(query, function (err, dataproprietaire, fields) {
             if (err) throw err;
-            if (data.length === 0) {
+            if (dataproprietaire.length === 0) {
               //n'est pas un proprietaire
               //check if responsable
 
               query = `select idchantier from chantier
               where Responsable = ${data[0].idPersonne}`;
 
-              db.connection.query(query, function (err, data, fields) {
+              db.connection.query(query, function (err, dataresponsable, fields) {
                 if (err) throw err;
-                if (data.length === 0) {
+                if (dataresponsable.length === 0) {
                   //n'est pas responsable
                   //check if ouvrier
                   query = `select idouvrier from ouvrier
                   where idouvrier = ${data[0].idPersonne}`;
-                  db.connection.query(query, function (err, data, fields){
-                    if (data.length === 0){
+                  db.connection.query(query, function (err, dataouvrier, fields){
+                    if (dataouvrier.length === 0){
                       //n'est pas un ouvrier
                       res.json({
                         status: 100,
@@ -95,13 +95,13 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                       });
                     }else{
                       //est un ouvrier
-                    query = `select tache from travaille
+                    query = `select chantier from affecter
                     where ouvrier = ${data[0].idPersonne}`;
-                    db.connection.query(query, function (err, data, fields){
+                    db.connection.query(query, function (err, datachantier, fields){
                       res.json({
                         status: 200,
                         role:"ouvrier",
-                        data: data,
+                        data: datachantier,
                         message: "Action complete successfully!",
                       });
                     });
@@ -111,7 +111,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                   res.json({
                     status: 200,
                     role:"responsable",
-                    data: data,
+                    data: dataresponsable,
                     message: "Action complete successfully!",
                   });
                 }
@@ -137,7 +137,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
           res.json({
             status: 100,
             message: "mot de passe incorrect!"
-          });
+       });
       }
     }
   });

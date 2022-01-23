@@ -101,10 +101,62 @@ router.get("/idOuvrier/:idOuvrier/role/", function (req, res) {
 
     res.json({
       status: 200,
+      data: resdata,
       message: "Action complete successfully!",
     });
   });
 });
+
+//role
+router.get("/idOuvrier/:idOuvrier/responsable", function (req, res) {
+
+  query = `select idchantier from chantier
+  where Responsable = ${req.params.idOuvrier}`;
+
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    if (data.length === 0) {
+
+      res.json({
+        status: 100,
+        message: "n'est pas un responsable",
+      });
+    }else{
+      res.json({
+        status: 200,
+        data: data,
+        message: "Action complete successfully!",
+      });
+    }
+  });
+});
+
+
+router.get("/idPersonne/:idPersonne/proprietaire", function (req, res) {
+
+  query = `select idchantier from chantier
+  where proprietaire = ${req.params.idPersonne}`;
+
+  db.connection.query(query, function (err, data, fields) {
+    if (err) throw err;
+    if (data.length === 0) {
+
+      res.json({
+        status: 100,
+        message: "n'est pas un responsable",
+      });
+    }else{
+      res.json({
+        status: 200,
+        data: data,
+        message: "Action complete successfully!",
+      });
+    }
+  });
+});
+
+
+
 
 //chercher ouvrier
 router.get("/email/:email", function (req, res) {
@@ -383,7 +435,6 @@ router.delete("/id/:id", function (req, res) {
         });
       });
     }else{
-      console.log(data);
       //responding
       res.json({
         status: 100,
@@ -481,33 +532,7 @@ router.put(
   }
 );
 
-router.delete("/id/:id/tache/:tache", function (req, res) {
-    let query = `delete from taravaille where (ouvrier = ${req.params.id} and tache =  ${req.params.tache}) `;
 
-    db.connection.query(query, function (err, data, fields) {
-      if (err) throw err;
-      //responding
-      res.json({
-        status: 200,
-        message: "Ouvrier supprimer! de la tache",
-      });
-    });
-});
-
-
-router.delete("/id/:id/chantier/:chantier", function (req, res) {
-    //on peut supprimer
-    let query = `delete from affecter where (ouvrier = ${req.params.id} and chantier =  ${req.params.chantier}) `;
-
-    db.connection.query(query, function (err, data, fields) {
-      if (err) throw err;
-      //responding
-      res.json({
-        status: 200,
-        message: "Ouvrier supprimer du chantier",
-      });
-    });
-});
 module.exports = router;
 
 // alter table installer

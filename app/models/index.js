@@ -11,7 +11,6 @@ db.connection = mysql.createConnection({
     password: dbConfig.PASSWORD,
     database: dbConfig.DB
   });
-
 // db.personne = require('./personne.model')(sequelize, Sequelize);
 // db.chantier = require('./chantier.model')(sequelize, Sequelize);
 // db.equipement = require('./equipement.model')(sequelize, Sequelize);
