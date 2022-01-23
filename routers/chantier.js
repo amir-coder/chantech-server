@@ -81,7 +81,7 @@ router.get('/idChantier/:idChantier/tacheTerminer', function(req, res){
       message: "Object tache list retrieved successfully"
     })
   })
-  });
+});
 
    //getting the list of object tache in chantier
 router.get('/idChantier/:idChantier/tacheCourant', function(req, res){
@@ -94,7 +94,7 @@ router.get('/idChantier/:idChantier/tacheCourant', function(req, res){
       message: "Object tache list retrieved successfully"
     })
   })
-  });
+});
 
 
 //getting the list of object Chantier termminer
@@ -308,21 +308,34 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
           });
         }else{
           //responsable existe
-
-          let query = `insert into chantier (nomchantier, proprietaire, responsable, address) values ( 
-            "${req.params.nomChantier}",
-            (select idPersonne from personne where email="${req.params.emailpro}"), 
-            (select idPersonne from personne where email = "${req.params.emailrespo}"),
-            "${req.params.address}"
-            );`;
-          
+          //verifier si il est un responsable
+          let query = `select idchantier from chantier where responsable IN (select idpersonne from personne where email = "${req.params.emailrespo})"`;
           db.connection.query(query, function(err, data, fields) {
-            if (err) throw err;
-            res.json({
-              status: 200,
-              message: "New Object Chantier Added successfully!"
+            if(err) throw err;
+            if(data.length === 0) {
+              //est deja responsable
+              res.json({
+                status: 100,
+                message: "Responsable ne peut pas etre responsable a plusieure chantier."
+              });
+            }else{
+              //n'est pas un responsable
+            //incerting
+            let query = `insert into chantier (nomchantier, proprietaire, responsable, address) values ( 
+              "${req.params.nomChantier}",
+              (select idPersonne from personne where email="${req.params.emailpro}"), 
+              (select idPersonne from personne where email = "${req.params.emailrespo}"),
+              "${req.params.address}"
+              );`;
+            db.connection.query(query, function(err, data, fields) {
+              if (err) throw err;
+              res.json({
+                status: 200,
+                message: "New Object Chantier Added successfully!"
+              });
             });
-          })
+            }
+          });
         }
       });
     }

@@ -64,16 +64,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
 
         }else{
           //is not admin
-          //check if proprietaire
-         query = `select idchantier from chantier
-          where proprietaire = ${data[0].idPersonne}`;
-
-          db.connection.query(query, function (err, dataproprietaire, fields) {
-            if (err) throw err;
-            if (dataproprietaire.length === 0) {
-              //n'est pas un proprietaire
               //check if responsable
-
               query = `select idchantier from chantier
               where Responsable = ${data[0].idPersonne}`;
 
@@ -88,13 +79,13 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                     if (dataouvrier.length === 0){
                       //n'est pas un ouvrier
                       //check if proprietaire
-         query = `select idchantier from chantier
-         where proprietaire = ${data[0].idPersonne}`;
+                      query = `select idchantier from chantier
+                      where proprietaire = ${data[0].idPersonne}`;
 
-         db.connection.query(query, function (err, dataproprietaire, fields) {
-           if (err) throw err;
-           if (dataproprietaire.length === 0) {
-             //n'est pas un proprietaire
+                      db.connection.query(query, function (err, dataproprietaire, fields) {
+                        if (err) throw err;
+                        if (dataproprietaire.length === 0) {
+                          //n'est pas un proprietaire
                       res.json({
                         status: 200,
                         role:"<UKN>",
@@ -133,16 +124,6 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                   });
                 }
               });
-
-            }else{
-              res.json({
-                status: 200,
-                role:"proprietaire",
-                data: data,
-                message: "Action complete successfully!",
-              });
-            }
-          });
  
         }
       }else {
