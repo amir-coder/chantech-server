@@ -88,7 +88,7 @@ router.get("/email/:email/mdp/:mdp", function(req, res) {
                     if (dataouvrier.length === 0){
                       //n'est pas un ouvrier
                       res.json({
-                        status: 100,
+                        status: 200,
                         role:"<UKN>",
                         data: data,
                         message: "Utilisateur n'a pas un role",
