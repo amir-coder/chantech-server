@@ -154,6 +154,31 @@ router.get("/idOuvrier/:idOuvrier/responsable", function (req, res) {
 //role
 router.get("/idOuvrier/:idOuvrier/affecter", function (req, res) {
 
+  
+  query = `SELECT 
+  p1.idPersonne as 'idProprietaire',
+  p1.nom as 'nomProprietaire',
+  p1.prenom as 'prenomProprietaire',
+  p1.numero as 'numeroProprietaire',
+  p1.email as 'emailProprietaire',
+  p1.mdp as 'mdpProprietaire',
+  p1.email as 'emailProprietaire',
+  p2.idPersonne as 'idResponsable',
+  p2.nom as 'nomResponsable',
+  p2.prenom as 'prenomResponsable',
+  p2.numero as 'numeroResponsable',
+  p2.email as 'emailResponsable',
+  p2.mdp as 'mdpResponsable',
+  p2.email as 'emailResponsable',
+  idChantier,
+  nomChantier,
+  proprietaire,
+  responsable,
+  fermer,
+  address
+  FROM chantier ch, personne p1, personne p2 where ((ch.idchantier in (select chantier from affecter
+    where (ouvrier = ${req.params.idOuvrier}))) (ch.fermer = 0) and( p1.idpersonne = proprietaire) and (p2.idpersonne = responsable))`;
+
   query = `select chantier from affecter
   where ((ouvrier = ${req.params.idOuvrier}) and (chantier in (select idchantier from chantier where (fermer = 0))))`;
 
