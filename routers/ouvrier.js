@@ -111,12 +111,11 @@ router.get("/idOuvrier/:idOuvrier/role/", function (req, res) {
 router.get("/idOuvrier/:idOuvrier/responsable", function (req, res) {
 
   query = `select idchantier from chantier
-  where Responsable = ${req.params.idOuvrier}`;
+  where ((Responsable = ${req.params.idOuvrier}) and (fermer = 0))`;
 
   db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
     if (data.length === 0) {
-
       res.json({
         status: 100,
         message: "n'est pas un responsable",

@@ -309,14 +309,14 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
         }else{
           //responsable existe
           //verifier si il est un responsable
-          let query = `select idchantier from chantier where responsable IN (select idpersonne from personne where email = "${req.params.emailrespo})"`;
+          let query = `select idchantier from chantier where (responsable IN (select idpersonne from personne where email = "${req.params.emailrespo})and (fermer = 0))"`;
           db.connection.query(query, function(err, data, fields) {
             if(err) throw err;
             if(data.length === 0) {
               //est deja responsable
               res.json({
                 status: 100,
-                message: "Responsable ne peut pas etre responsable a plusieure chantier."
+                message: "Responsable ne peut pas etre responsable a plusieure chantiers."
               });
             }else{
               //n'est pas un responsable

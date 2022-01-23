@@ -201,7 +201,7 @@ router.get("/idPersonne/:idPersonne/proprietaire", function (req, res) {
 
       res.json({
         status: 100,
-        message: "n'est pas un responsable",
+        message: "n'est pas un proprietaire",
       });
     }else{
       res.json({
