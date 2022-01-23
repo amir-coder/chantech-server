@@ -125,11 +125,11 @@ router.put("/numEquipement/:numEquipement/nbArticle/:nbArticle/prix/:prix", func
 //installing equipement in chantier
 router.post("/numEquipement/:numEquipement/chantier/:chantier/nbArticle/:nbArticle", function(req, res){
   //recuperer le nombre d'article dans le stock
-  let stock = 0;
+  var stock = 0;
   let stockquery =`select sum(nb_echantillon) as 'stock'  from equipement where numEquipement = ${req.params.numEquipement}`;
   db.connection.query(stockquery, function(err, data, fields) {
     if (err) throw err;
-    stock = data[0].stock;
+    stock = parseInt(data[0].stock);
     if (stock){
       //stock existe
       //get the number of articles installed in the chantier
@@ -138,8 +138,10 @@ router.post("/numEquipement/:numEquipement/chantier/:chantier/nbArticle/:nbArtic
         if(err) throw err;
         if(!(data2[0].nombreInstallerChantier == null)){
           //equipement deja installer
-          let equipementDansChantier = data2[0].nombreInstallerChantier;
-          stock = stock + equipementDansChantier; 
+          var equipementDansChantier = parseInt(data2[0].nombreInstallerChantier);
+          console.log(" stock before returning:" + stock);
+          stock = stock + parseInt(equipementDansChantier); 
+          console.log(" stock after returning:" + stock);
           //get the new articles number to add
           let newNumber = parseInt(req.params.nbArticle);
           //test if adding is possible
@@ -149,7 +151,9 @@ router.post("/numEquipement/:numEquipement/chantier/:chantier/nbArticle/:nbArtic
             db.connection.query(addQueryy, function(err, data2, fields){
               if(err) throw err;
               //updating stock
+              console.log(" stock before sub:" + stock);
               stock = stock - newNumber;
+              console.log(" stock after sub:" + stock);
               updatequery = `update Equipement set nb_echantillon = ${stock} where (numEquipement = ${req.params.numEquipement})`;
               db.connection.query(updatequery, function(err, data2, fields){
                 if(err) throw err;
