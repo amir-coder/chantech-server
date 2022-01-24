@@ -528,13 +528,15 @@ router.put(
   "/id/:id/nom/:nom/prenom/:prenom/numero/:numero/email/:email/specialite/:specialite",
   function (req, res) {
     //verifying if email is duplicated
-    searchemailquery = `select * from personne where ((email = "${req.params.email}") and not (idPersonne = ${req.params.id})`;
+    searchemailquery = `select * from personne where ((email = "${req.params.email}") and not (idPersonne = ${req.params.id}))`;
     db.connection.query(searchemailquery, function (err, data, fields) {
-      if (data.lengh === 0) {
+      if(err) throw err;
+      if (data.length === 0) {
         //email unique
-        searchnumeroquery = `select * from personne where ((numero = ${req.params.numero}) and not (idPersonne = ${req.params.id})`;
+        searchnumeroquery = `select * from personne where ((numero = ${req.params.numero}) and not (idPersonne = ${req.params.id}))`;
         db.connection.query(searchnumeroquery, function (err, data, fields) {
-          if (data.lengh === 0) {
+          if(err) throw err;
+          if (data.length === 0) {
             //numero unique
 
             //updating personne info
@@ -582,6 +584,7 @@ router.put(
           idspecialite = ${data1[0].idSpecialite}
           where (idouvrier = ${req.params.id})`;
                   db.connection.query(query22, function (err, data, fields) {
+                    if(err) throw err;
                     res.json({
                       status: 200,
                       message: "Object Ouvrier mofidied successfully!",
