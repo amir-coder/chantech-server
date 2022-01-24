@@ -309,7 +309,7 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
         }else{
           //responsable existe
           //verifier si il est un responsable
-          let query = `select idchantier from chantier where (responsable IN (select idpersonne from personne where email = "${req.params.emailrespo})and (fermer = 0))"`;
+          let query = `select idchantier from chantier where (responsable IN (select idpersonne from personne where ((email = "${req.params.emailrespo})and (fermer = 0)))"`;
           db.connection.query(query, function(err, data, fields) {
             if(err) throw err;
             if(data.length === 0) {
