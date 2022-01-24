@@ -313,12 +313,6 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
           db.connection.query(query, function(err, data, fields) {
             if(err) throw err;
             if(data.length === 0) {
-              //est deja responsable
-              res.json({
-                status: 100,
-                message: "Responsable ne peut pas etre responsable a plusieure chantiers."
-              });
-            }else{
               //n'est pas un responsable
             //incerting
             let query = `insert into chantier (nomchantier, proprietaire, responsable, address) values ( 
@@ -334,6 +328,12 @@ router.post("/nomchantier/:nomChantier/emailproprietaire/:emailpro/emailresponsa
                 message: "New Object Chantier Added successfully!"
               });
             });
+            }else{
+              //est deja responsable
+              res.json({
+                status: 100,
+                message: "Responsable ne peut pas etre responsable a plusieure chantiers."
+              });
             }
           });
         }
