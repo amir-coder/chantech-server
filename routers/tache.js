@@ -92,7 +92,7 @@ router.put("/setTerminer/idTache/:idTache", function (req, res) {
 //affecter une tache a un ouvrier dans un chantier
 
 router.post(
-  "idTache/:idTache/idOuvrier/:idOuvrier",
+  "/idTache/:idTache/idOuvrier/:idOuvrier",
   function (req, res) {
     //check if ouvrier existe
     query = `select * from personne where idPersonne= ${req.params.idOuvrier}`;

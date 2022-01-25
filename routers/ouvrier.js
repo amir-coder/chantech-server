@@ -47,9 +47,9 @@ router.get("/idOuvrier/:idOuvrier/travaille", function (req, res) {
 
   let query = `SELECT sum(duree) as 'heureTravailleOuvrier'
   from tache 
-  where (termine = 1)
-  and idTache IN (select idTache 
-    from travaille where (ouvrier = ${req.params.idOuvrier} ))`;
+  where ((termine = 1)
+  and (idTache IN (select tache 
+    from travaille where (ouvrier = ${req.params.idOuvrier} ))))`;
   db.connection.query(query, function (err, data, fields) {
     if (err) throw err;
     res.json({
