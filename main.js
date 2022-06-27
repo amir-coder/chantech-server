@@ -2,8 +2,6 @@
 
 const express = require("express");
 const cors = require("cors");
-
-
 //creating express app
 const app = express();
 
