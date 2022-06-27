@@ -13,5 +13,6 @@ construction site, per day and per worker.
 ## Solution:
 
 ### * Use case model:
+
 ![Alt Image text](/documents/Use Case.png?raw=true "Use Case")
 
