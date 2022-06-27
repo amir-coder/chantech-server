@@ -12,7 +12,21 @@ construction site, per day and per worker.
 
 ## Solution:
 
-### * Use case model:
+### - Use case model: (In French)
 
-![Alt Image text](/documents/Use Case.png?raw=true "Use Case")
+![Alt Image text](/documents/Use%20Case.png?raw=true "Use Case")
 
+### - Data Base model: (In French)
+
+![Alt Image text](/documents/Data%20Base%20model.png?raw=true "Use Case")
+
+### - Main REST API Routes:
+- Chantier (Construction Site)
+- Equipement
+- Ouvrier (Worker)
+- tache (Tasks)
+
+### - Tech Used:
+- wamp server for creating and managing the Relational Database
+- express for making the REST API
+- mysql2 to connect with the database
